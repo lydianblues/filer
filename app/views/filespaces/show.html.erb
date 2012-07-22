@@ -1,0 +1,125 @@
+<% title @filespace.name %>
+
+<% content_for :head do %>
+
+	<style>
+		#content {
+			overflow: hidden;
+			margin: 1em 1em 0.5em 1em;
+		}
+		#tree-wrapper {
+			width: 30%;
+			float: left;
+		}
+		#upload-wrapper {
+			width: 70%;
+			float: left;
+		}
+		#tree-wrapper > .liner {
+			border: 2px solid green;
+			height: 400px;
+			padding: 1em;
+			margin-right: 0.5em;
+			overflow-y: auto;
+		}
+		#upload-wrapper > .liner {
+			padding: 1em;
+			border: 2px solid green;
+			overflow-y: auto;
+			height: 400px; 
+		}
+		#alog {
+			margin: 0.5em 1em 0em 1em;
+			padding: 0.5em;
+			border: 2px solid green;
+			height: 200px;
+			overflow-y: auto;
+			clear: left;
+		}
+		
+	</style>
+	
+	
+	
+<% end %>
+
+<h2>
+  <%= link_to "View All Filespaces", filespaces_path %>
+</h2>
+
+<h2><%= @filespace.name.titleize %><span style="margin-left: 0.5em">File Space</span></h2>
+
+<div id="content">
+	
+	<div id="tree-wrapper">
+		<div class="liner">
+			<div id="root-folder">
+				
+			</div>
+		</div>
+	</div>
+	<div id="upload-wrapper">
+		<div class="liner">
+			
+		</div>
+	</div>
+		
+</div>
+
+<div id="alog">
+</div>
+
+<%= javascript_include_tag 'jstree'%>
+
+<script>
+	$(function () {
+
+	$("#root-folder")
+		.bind("before.jstree", function (e, data) {
+			$("#alog").append(data.func + "<br />");
+		})
+		.jstree({ 
+			// List of active plugins
+			"plugins" : ["themes", "json", "ui", "dnd", "search",
+				"hotkeys", "contextmenu"],
+
+			"json" : { 
+			
+				"ajax" : {
+					// the URL to fetch the data
+					// folders.js?id=n&opr=children
+					
+					"url" : "/folders.json",
+					
+					// the `data` function is executed in the instance's scope
+					// the parameter is the node being loaded 
+					// (may be -1, 0, or undefined when loading the root nodes)
+					"data" : function (n) { 
+						// the result is fed to the AJAX request `data` option
+						return { 
+							"opr" : "children", 
+							"id" : n.attr ? n.attr("id").replace("node_","") : 1 
+						}; 
+					}
+				}
+			}
+		})
+		.bind("create_node.jstree", function (e, data) {
+			alert("Creating node");
+		})
+		.bind("rename_node.jstree", function (e, data) {
+			alert("Renaming node");
+		})
+		.bind("delete_node.jstree", function (e, data) {
+			alert("Delete node");
+		})
+		.bind("move_node.jstree", function (e, data) {
+			alert("Move node");
+		})
+		.bind("copy_node.jstree", function (e, data) {
+			alert("Copy node");
+		});
+});	
+
+
+</script>

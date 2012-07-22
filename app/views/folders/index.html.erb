@@ -1,0 +1,10 @@
+<% title "Folders" %>
+
+<% for folder in @folders %>
+  <div class="folder">
+    <h2><%= link_to folder.name, folder %></h2>
+    Documents: <%= folder.documents.size %>
+  </div>
+<% end %>
+
+<p><%= link_to "New Folder", new_folder_path %></p>

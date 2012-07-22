@@ -1,0 +1,9 @@
+<% title "Filespaces" %>
+
+<% for filespace in @filespaces %>
+  <div class="filespace">
+    <h2><%= link_to filespace.name, filespace %></h2>
+  </div>
+<% end %>
+
+<p><%= link_to "New Filespace", new_filespace_path %></p>
