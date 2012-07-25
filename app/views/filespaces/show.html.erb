@@ -39,8 +39,6 @@
 		
 	</style>
 	
-	
-	
 <% end %>
 
 <h2>
@@ -53,14 +51,15 @@
 	
 	<div id="tree-wrapper">
 		<div class="liner">
-			<div id="root-folder">
-				
+			<%= tag("div", id: "root-folder",
+			  data: {filespace: @filespace.id}) %>
 			</div>
 		</div>
 	</div>
 	<div id="upload-wrapper">
 		<div class="liner">
-			
+			<%= render :partial => 'panels/uploader',
+				:locals =>  {:folder => @root_folder} %>
 		</div>
 	</div>
 		
@@ -87,7 +86,7 @@
 			
 				"ajax" : {
 					// the URL to fetch the data
-					// folders.js?id=n&opr=children
+					// folders.js?id=n&opr=get_children&fs=n
 					
 					"url" : "/folders.json",
 					
@@ -97,15 +96,58 @@
 					"data" : function (n) { 
 						// the result is fed to the AJAX request `data` option
 						return { 
-							"opr" : "children", 
-							"id" : n.attr ? n.attr("id").replace("node_","") : 1 
+							"opr" : "get_children", 
+							"id" : n.attr ? n.attr("id").replace("node-","") : 1,
+							"fs" : $("#root-folder").data("filespace")
 						}; 
 					}
 				}
 			}
 		})
-		.bind("create_node.jstree", function (e, data) {
-			alert("Creating node");
+		.bind("create_node.jstree", function(e, data) {
+			parent_id = data.rslt.parent.attr("id").replace("node-", "");
+			action = "/folders.json"; // Rails URL
+	
+			$.post(action, {
+				operation: "create_node",
+				parent_id: parent_id,
+				},
+				function(r) {
+					alert("Creating node " + r.name);
+				}
+			);
+		})
+		.bind("click.jstree", function(e, data) {
+			// 'this' is the root div
+			
+			if (data == undefined)
+			  folder_id = data.rslt.parent.attr("id").replace("node-", "");
+			else
+			  folder_id = $(e.target.parentNode).attr("id").replace("node-","");
+			end
+			
+			folder_id = $(e.target.parentNode).attr("id").replace("node-","");
+			action = "/folders/" + folder_id + "/documents"; // Rails URL
+			$("#fileupload").attr("action", action);
+			
+			$("#fileupload > table > tbody.files").empty();
+			
+			// This function is copied from the uploader initialization
+			// function in _uploader.html.erb.  Very un-dry.  This is the
+			// only direct tie-in with the uploader.
+			 $.getJSON($('#fileupload').prop('action'), function (files) {
+		          var fu = $('#fileupload').data('fileupload'), 
+		            template;
+		          fu._adjustMaxNumberOfFiles(-files.length);
+		          template = fu._renderDownload(files)
+		            .appendTo($('#fileupload .files'));
+		          // Force reflow:
+		          fu._reflow = fu._transition && template.length &&
+		            template[0].offsetWidth;
+		          template.addClass('in');
+		          $('#loading').remove();
+		        });
+		
 		})
 		.bind("rename_node.jstree", function (e, data) {
 			alert("Renaming node");

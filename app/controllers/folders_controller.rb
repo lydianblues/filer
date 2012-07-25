@@ -4,9 +4,9 @@ class FoldersController < ApplicationController
   #
   # This is the URL used by jstree to get the children of a node.
   # 
-  # /folders.js?id=:id&opr=children
+  # /folders.js?id=:id&opr=get_children
   #
-  # It really should be "/folder/:id.js?opr=children", so that it is
+  # It really should be "/folder/:id.js?opr=get_children", so that it is
   # handled by the show action instead of the index action.
   # 
   # for creating a node: operation=create_node&id=357&position=1&
@@ -22,35 +22,53 @@ class FoldersController < ApplicationController
   #   }
   #   children: []
   # }
-    
+  #
+  # FilespacesController:
+  #   show: renders the filespace panel
+  #
+  # FoldersController
+  #    receives XHR for tree node operations:
+  #      get_children, create_node, delete_node, rename_node, move_node,
+  #      copy_node
+  #
+  # DocumentsController
+  # 
   def index
-     if params[:opr] == 'children'
-       @folder = Folder.find(params[:id])
+    
+    # Sample params:
+    # opr: get_children
+    # id: '1'
+    # fs: '2'
+    # action: index
+    # controller: folders
+    # format: json
+    
+    @filespace = Filespace.find(params[:fs])
+    
+    if params[:opr] == 'get_children'
+      if params[:id] == "1"
+        # This means use the root folder of the filespace, which may not
+        # actually have the 'id' of 1.
         
-      response = [{
-        title: "Incoming",
-        data: {},
-        li_attr: {id: 80, class: "jstree-leaf"}
-      },
-      {
-        title: "Current",
-        data: {},
-        li_attr: {id: 81, class: "jstree-leaf"}
-      },
-      {
-        title: "Archived",
-        data: {},
-        li_attr: {id: 82, class: "jstree-leaf"}
-      },
-      {
-        title: "Deleted",
-        data: {},
-        li_attr: {id: 83, class: "jstree-leaf jstree-last jstree-no-dots"}
-      }
-      ] 
-      respond_with(response)
-    else
-      # render :json => @myobject.to_json, :status => :unprocessable_entity
+        @folder = @filespace.root_folder
+        
+        raise "No root folder" unless @folder
+        
+        @children = Folder.where(parent_id: @folder.id)
+        
+        response = @children.map do |f|
+          {title: f.name,
+            data: {foo: "bar"},
+            # a_attr: {href: folder_documents_path(doc)},
+            li_attr: {id: "node-#{f.id}", class: "jstree-leaf"}
+          }
+            
+        end
+        logger.info "FoldersController#index: #{response.to_yaml}"
+        respond_with(response)
+      else
+        # render :json => @myobject.to_json, :status => :unprocessable_entity
+      end
     end
   end
 
@@ -62,14 +80,18 @@ class FoldersController < ApplicationController
     @folder = Folder.new
   end
 
+  # Invoked only through Javascript
   def create
-    @folder = Folder.new(params[:folder])
-    if @folder.save
-      flash[:notice] = "Successfully created folder."
-      redirect_to @folder
-    else
-      render :action => 'new'
-    end
+    parent_id = params[:parent_id]
+    parent = Folder.find(parent_id)
+    filespace = Filespace.find(parent.filespace_id)
+    folder = Folder.new(name: "New Node", parent_id: parent_id)
+    filespace.folders << folder
+    filespace.save!
+    respond_with(folder)
+  rescue Exception => e
+    logger.info "FoldersController#create: exception is #{e.message}"
+    respond_with(status: :unprocessable_entity)
   end
 
   def edit

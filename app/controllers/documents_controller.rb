@@ -1,7 +1,12 @@
 class DocumentsController < ApplicationController
   
-   def index
+  #
+  # This is called by the fileuploader to get all the documents in
+  # a given folder.  Return JSON format.
+  #
+  def index
     @documents = Document.where(folder_id: params[:folder_id]).all
+    logger.info "found #{@documents.size} documents"
     render :json => @documents.collect {|p| p.to_jq_upload }.to_json
   end
   
@@ -10,9 +15,9 @@ class DocumentsController < ApplicationController
   end
   
   def create
-    # folder = Folder.find(params[:folder_id])
-    params[:document].merge!(folder_id: params[:folder_id])
+    folder = Folder.find(params[:folder_id])
     @document = Document.new(params[:document])
+    folder.documents << @document
     if @document.save
       respond_to do |format|
         format.html do 

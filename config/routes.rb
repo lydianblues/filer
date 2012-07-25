@@ -5,6 +5,8 @@ Research::Application.routes.draw do
   resources :folders do
     resources :documents
   end
+  
+  root :to => 'filespaces#index'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

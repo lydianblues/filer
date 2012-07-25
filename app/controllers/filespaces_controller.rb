@@ -1,15 +1,14 @@
 class FilespacesController < ApplicationController
-  
-  def show
-    @filespace = Filespace.find(params[:id])
-  end
-  
+   
   def index
     @filespaces = Filespace.all
   end
 
   def show
     @filespace = Filespace.find(params[:id])
+    
+    # Set the root folder for this filespace.
+    @root_folder = @filespace.root_folder
   end
 
   def new
@@ -17,11 +16,18 @@ class FilespacesController < ApplicationController
   end
 
   def create
+    error = true
     @filespace = Filespace.new(params[:filespace])
-    ["Incoming", "Current", "Archived", "Trash"].each do |name|
-      @filespace.folders.build(name: name)
-    end
     if @filespace.save
+      root = @filespace.folders.create(name: "Root")
+      @filespace.root_folder = root
+      parent_id = root.id
+      ["Incoming", "Current", "Archived", "Trash"].each do |name|
+        @filespace.folders.build(name: name, parent_id: parent_id)
+      end
+      error = false
+    end
+    if !error && @filespace.save
       flash[:notice] = "Successfully created filespace."
       redirect_to @filespace
     else
