@@ -1,4 +1,9 @@
 PATH
+  remote: /opt/gems/fileupload-rails
+  specs:
+    fileupload-rails (0.0.1)
+
+PATH
   remote: /opt/gems/jstree-rails
   specs:
     jstree-rails (0.0.1)
@@ -117,6 +122,7 @@ PLATFORMS
 DEPENDENCIES
   carrierwave
   coffee-rails (~> 3.2.1)
+  fileupload-rails!
   jquery-rails
   jstree-rails!
   mini_magick

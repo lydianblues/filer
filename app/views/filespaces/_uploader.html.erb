@@ -1,39 +1,28 @@
 <% content_for :head do %>
 
-	<!-- Bootstrap CSS Toolkit styles -->
-	<%= stylesheet_link_tag "http://blueimp.github.com/cdn/css/bootstrap.min.css" %>
-	
-	<!-- Generic page styles -->
-	<%= stylesheet_link_tag "style"%>
-	
-	<!-- Bootstrap styles for responsive website layout, supporting different screen sizes -->
-	<%= stylesheet_link_tag "http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css" %>
-	
-	<!-- Bootstrap Image Gallery styles -->
-	<%= stylesheet_link_tag "http://blueimp.github.com/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css" %>
-	
-	<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
-	<%= stylesheet_link_tag "jquery.fileupload-ui.css" %>
-	
-	<!-- from the jquery-fileupload distribution -->
-	<%= javascript_include_tag 'locale.js' %>
-	<%= stylesheet_link_tag 'style' %>
-	<%= stylesheet_link_tag 'jquery.fileupload-ui' %>
+<!-- Bootstrap CSS Toolkit styles -->
+<%= stylesheet_link_tag("blueimp/bootstrap.min.css") %>
 
-	<!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
-	<%= javascript_include_tag 'jquery' %>
-	<%= javascript_include_tag 'jquery-ui' %>
-	<!-- <%= javascript_include_tag 'jquery.ui.widget.js' %> -->
-	
-	<!-- The Templates and Load Image plugins are included for the FileUpload user interface -->
-	<%= javascript_include_tag "http://blueimp.github.com/JavaScript-Templates/tmpl.min.js" %>
-	<%= javascript_include_tag "http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js" %>
-	
-	<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-	<%= javascript_include_tag 'jquery.iframe-transport.js' %>
-	<%= javascript_include_tag 'jquery.fileupload.js' %>
-	<%= javascript_include_tag 'jquery.fileupload-ui.js' %>
-		
+<!-- Generic page styles -->
+<%= stylesheet_link_tag "style" %>
+
+<!-- Bootstrap styles for responsive website layout,
+  supporting different screen sizes -->
+<%= stylesheet_link_tag("blueimp/bootstrap-responsive.min.css") %>
+
+<!-- Bootstrap CSS fixes for IE6 -->
+<!--[if lt IE 7]><link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-ie6.min.
+css"><![endif]-->
+
+<!-- Bootstrap Image Gallery styles -->
+<%= stylesheet_link_tag("blueimp/bootstrap-image-gallery.min.css") %>
+
+<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+<%= stylesheet_link_tag "jquery.fileupload-ui" %>
+
+<!-- Shim to make HTML5 elements usable in older Internet Explorer versions -->
+<!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
 <% end %>
 	
 <div id="files-wrapper">
@@ -82,6 +71,30 @@
 	    <% end %>
 	</div>
 </div>
+
+<!-- The Templates plugin is included to render the
+  upload/download listings -->
+<%= javascript_include_tag("blueimp/tmpl.min.js") %>
+
+<!-- The Load Image plugin is included for the preview images
+ and image resizing functionality -->
+<%= javascript_include_tag("blueimp/load-image.min.js") %>
+
+<!-- The Canvas to Blob plugin is included for image
+  resizing functionality -->
+<%= javascript_include_tag("blueimp/canvas-to-blob.min.js") %>
+
+<!-- Bootstrap JS and Bootstrap Image Gallery are not required,
+  but included for the demo -->
+<%= javascript_include_tag("blueimp/bootstrap.min.js") %>
+<%= javascript_include_tag( "blueimp/bootstrap-image-gallery.min.js") %>
+
+<!--[if gte IE 8]><script src="fileupload/cors/jquery.xdr-transport.js"></script><![endif]-->
+
+<!-- need to include BlueImp stuff before jQuery Fileupload -->
+<%= javascript_include_tag 'fileupload' %>
+
+<%= javascript_include_tag 'jstree-filespaces' %>
 
 <script>
   var fileUploadErrors = {
@@ -177,4 +190,6 @@
 
     });
 </script>
+
+
 
