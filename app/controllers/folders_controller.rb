@@ -1,6 +1,7 @@
 class FoldersController < ApplicationController
   
   respond_to :json
+    
   #
   # This is the URL used by jstree to get the children of a node.
   # 
@@ -49,26 +50,27 @@ class FoldersController < ApplicationController
       if params[:id] == "1"
         # This means use the root folder of the filespace, which may not
         # actually have the 'id' of 1.
-        
         @folder = @filespace.root_folder
-        
-        raise "No root folder" unless @folder
-        
-        @children = Folder.where(parent_id: @folder.id)
-        
-        response = @children.map do |f|
-          {title: f.name,
-            data: {foo: "bar"},
-            # a_attr: {href: folder_documents_path(doc)},
-            li_attr: {id: "node-#{f.id}", class: "jstree-leaf"}
-          }
-            
-        end
-        logger.info "FoldersController#index: #{response.to_yaml}"
-        respond_with(response)
       else
-        # render :json => @myobject.to_json, :status => :unprocessable_entity
+        @folder = Folder.find_by_id(params[:id])
       end
+      
+      if @folder
+        @children = Folder.where(parent_id: @folder.id)
+        response = @children.map do |f|
+          attrs = {id: "node-#{f.id}"}
+          attrs[:class] = if f.leaf
+            "jstree-leaf"
+          else
+            "jstree-closed"
+          end
+          {title: f.name, data: {foo: "bar"}, li_attr: attrs}
+        end
+        render json: response, status: :ok
+      else
+        render json: params.to_json, status: :unprocessable_entity
+      end
+      logger.info "FoldersController#index: #{response.to_yaml}"
     end
   end
 
@@ -87,11 +89,17 @@ class FoldersController < ApplicationController
     filespace = Filespace.find(parent.filespace_id)
     folder = Folder.new(name: "New Node", parent_id: parent_id)
     filespace.folders << folder
-    filespace.save!
-    respond_with(folder)
-  rescue Exception => e
-    logger.info "FoldersController#create: exception is #{e.message}"
-    respond_with(status: :unprocessable_entity)
+    begin
+      ActiveRecord::Base.transaction do
+        filespace.save! # also saves the new folder
+        parent.leaf = false
+        parent.save!
+      end
+    rescue Exception => e
+      render json: nil, status: :unprocessable_entity
+    else
+      render json: folder.to_json
+    end
   end
 
   def edit

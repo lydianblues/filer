@@ -14,7 +14,7 @@ class Document < ActiveRecord::Base
        "name" => read_attribute(:content),
        "size" => content.size,
        "url" => content.url,
-       "thumbnail_url" => content.thumb.url,
+       # "thumbnail_url" => content.thumb.url,
        "delete_url" => folder_document_path(folder.id, id: self.id),
        "delete_type" => "DELETE" 
      }

@@ -32,21 +32,20 @@ $(function () {
 			}
 		})
 		.bind("create_node.jstree", function(e, data) {
-			parent_id = data.rslt.parent.attr("id").replace("node-", "");
-			action = "/folders.json"; // Rails URL
+			var parent_id = data.rslt.parent.attr("id").replace("node-", "");
+			var action = "/folders.json"; // Rails URL
 	
-			$.post(action, {
-				operation: "create_node",
-				parent_id: parent_id,
-				},
+			$.post(action, {operation: "create_node", parent_id: parent_id},
 				function(r) {
-					alert("Creating node " + r.name);
+					// do a rollback if this fails
+					alert("Created node with parent " + r.parent_id + 
+						" with status " + r.status);
 				}
 			);
 		})
-		.bind("click.jstree", function(e, data) {
+		.bind("dblclick.jstree", function(e, data) {
 			// 'this' is the root div
-			
+				
 			if (data == undefined) {
 			  folder_id = $(e.target.parentNode).attr("id").replace("node-","");
 			} else {
@@ -74,7 +73,6 @@ $(function () {
 		          template.addClass('in');
 		          $('#loading').remove();
 		        });
-		
 		})
 		.bind("rename_node.jstree", function (e, data) {
 			alert("Renaming node");

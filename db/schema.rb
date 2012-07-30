@@ -32,8 +32,9 @@ ActiveRecord::Schema.define(:version => 20120722173734) do
     t.string   "name"
     t.integer  "filespace_id"
     t.integer  "parent_id"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.boolean  "leaf",         :default => true
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
   end
 
   create_table "users", :force => true do |t|
