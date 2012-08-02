@@ -59,12 +59,14 @@ class FoldersController < ApplicationController
         @children = Folder.where(parent_id: @folder.id)
         response = @children.map do |f|
           attrs = {id: "node-#{f.id}"}
-          attrs[:class] = if f.leaf
-            "jstree-leaf"
+          if f.leaf
+            attrs[:class] = "jstree-leaf"
+            {title: f.name, data: {foo: "bar"}, li_attr: attrs}
           else
-            "jstree-closed"
+            attrs[:class] = "jstree-closed"
+            {title: f.name, data: {foo: "bar"},
+              children: [], li_attr: attrs}
           end
-          {title: f.name, data: {foo: "bar"}, li_attr: attrs}
         end
         render json: response, status: :ok
       else
@@ -82,9 +84,9 @@ class FoldersController < ApplicationController
     @folder = Folder.new
   end
 
-  # Invoked only through Javascript
+  # Invoked only through Javascript: "POST /folders.json"
   def create
-    parent_id = params[:parent_id]
+    parent_id = params[:folder][:parent_id]
     parent = Folder.find(parent_id)
     filespace = Filespace.find(parent.filespace_id)
     folder = Folder.new(name: "New Node", parent_id: parent_id)
@@ -98,6 +100,7 @@ class FoldersController < ApplicationController
     rescue Exception => e
       render json: nil, status: :unprocessable_entity
     else
+      logger.info folder.to_json
       render json: folder.to_json
     end
   end
@@ -106,13 +109,31 @@ class FoldersController < ApplicationController
     @folder = Folder.find(params[:id])
   end
 
+  # PUT /folders/:id.json
   def update
     @folder = Folder.find(params[:id])
-    if @folder.update_attributes(params[:folder])
-      flash[:notice] = "Successfully updated folder."
-      redirect_to folder_url
-    else
-      render :action => 'edit'
+    case params[:operation]
+    when "rename_node"
+      if @folder.update_attributes(params[:folder])
+        render json: nil,  status: :ok
+      else
+        render json: nil, status: :unprocessable_entity
+      end
+    when "move_node"
+      # Support move between filespaces.  Need to make sure that the
+      # user has permissions to do this.
+      params[:mover][:old_filespace]
+      params[:mover][:old_parent]
+      filespace_id =  params[:mover][:new_filespace]
+      parent_id = params[:mover][:new_parent]
+
+      # Gaping security hole.  Anyone can move any folder to anywhere.
+      if @folder.update_attributes(filespace_id: filespace_id,
+        parent_id: parent_id)
+        render json: nil,  status: :ok
+      else
+        render json: nil, status: :unprocessable_entity
+      end
     end
   end
   

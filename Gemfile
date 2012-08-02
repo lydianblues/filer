@@ -21,8 +21,8 @@ group :assets do
 end
 
 gem 'jquery-rails'
-gem 'jstree-rails', :path => '/opt/gems/jstree-rails'
-gem 'fileupload-rails', :path => '/opt/gems/fileupload-rails'
+gem 'jstree-rails' #, :path => '/opt/gems/jstree-rails'
+gem 'fileupload-rails' , :path => '/opt/gems/fileupload-rails'
 gem 'carrierwave'
 gem 'mini_magick'
 

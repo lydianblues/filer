@@ -23,6 +23,7 @@ class FilespacesController < ApplicationController
       @filespace.root_folder = root
       parent_id = root.id
       ["Incoming", "Current", "Archived", "Trash"].each do |name|
+        # 'leaf' flag defaults to true
         @filespace.folders.build(name: name, parent_id: parent_id)
       end
       error = false
