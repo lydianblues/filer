@@ -3,6 +3,11 @@ PATH
   specs:
     fileupload-rails (0.0.1)
 
+PATH
+  remote: /opt/gems/jstree-rails
+  specs:
+    jstree-rails (0.0.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -55,7 +60,6 @@ GEM
       railties (>= 3.2.0, < 5.0)
       thor (~> 0.14)
     json (1.7.4)
-    jstree-rails (0.0.3)
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -119,7 +123,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   fileupload-rails!
   jquery-rails
-  jstree-rails
+  jstree-rails!
   mini_magick
   rails (= 3.2.6)
   sass-rails (~> 3.2.3)

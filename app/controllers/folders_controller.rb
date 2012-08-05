@@ -61,13 +61,14 @@ class FoldersController < ApplicationController
           attrs = {id: "node-#{f.id}"}
           if f.leaf
             attrs[:class] = "jstree-leaf"
-            {title: f.name, data: {foo: "bar"}, li_attr: attrs}
+            {title: f.name, li_attr: attrs, data: {ntype: f.ntype}}
           else
             attrs[:class] = "jstree-closed"
-            {title: f.name, data: {foo: "bar"},
-              children: [], li_attr: attrs}
+            {title: f.name, children: [], li_attr: attrs,
+              data: {ntype: f.ntype}}
           end
         end
+        logger.info response.to_json
         render json: response, status: :ok
       else
         render json: params.to_json, status: :unprocessable_entity

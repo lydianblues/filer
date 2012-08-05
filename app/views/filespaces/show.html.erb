@@ -2,43 +2,55 @@
 
 <% content_for :head do %>
 
-	<style>
-		#content {
-			overflow: hidden;
-			margin: 1em 1em 0.5em 1em;
-		}
-		#tree-wrapper {
-			width: 30%;
-			float: left;
-		}
-		#upload-wrapper {
-			width: 70%;
-			float: left;
-		}
-		#tree-wrapper > .liner {
-			border: 2px solid green;
-			height: 400px;
-			padding: 1em;
-			margin-right: 0.5em;
-			overflow-y: auto;
-		}
-		#upload-wrapper > .liner {
-			padding: 1em;
-			border: 2px solid green;
-			overflow-y: auto;
-			height: 400px; 
-		}
-		#alog {
-			margin: 0.5em 1em 0em 1em;
-			padding: 0.5em;
-			border: 2px solid green;
-			height: 200px;
-			overflow-y: auto;
-			clear: left;
-		}
-		
-	</style>
-	
+    <style>
+        #content {
+            overflow: hidden;
+            margin: 1em 1em 0.5em 1em;
+        }
+        #tree-wrapper {
+            width: 30%;
+            float: left;
+        }
+        #upload-wrapper {
+            width: 70%;
+            float: left;
+        }
+        #tree-wrapper > .liner {
+            border: 2px solid green;
+            height: 38.5em;
+            padding: 1em;
+            margin-right: 0.5em;
+            overflow-y: auto;
+        }
+        #upload-wrapper > .liner {
+            padding: 1em;
+            border: 2px solid green;
+            overflow-y: auto;
+            height: 35em; 
+        }
+	#trail {
+	   height: 1.25em;
+	   background-color: #ffe;
+	   margin-bottom: 0.5em;
+	   border: 2px solid green;
+	   padding: 0.25em;
+	   font-size: large;
+        }
+	#leader {
+	  color: green;
+	  margin-right: 1em;
+        }
+        #alog {
+            margin: 0.5em 1em 0em 1em;
+            padding: 0.5em;
+            border: 2px solid green;
+            height: 200px;
+            overflow-y: auto;
+            clear: left;
+        }
+        
+    </style>
+    
 <% end %>
 
 <%= javascript_include_tag 'jquery-ui' %>
@@ -51,21 +63,22 @@
 <h2><%= @filespace.name.titleize %><span style="margin-left: 0.5em">File Space</span></h2>
 
 <div id="content">
-	
-	<div id="tree-wrapper">
-		<div class="liner">
-			<%= tag("div", id: "root-folder",
-			  data: {filespace: @filespace.id}) %>
-			</div>
-		</div>
-	</div>
-	<div id="upload-wrapper">
-		<div class="liner">
-			<%= render :partial => 'uploader',
-				:locals =>  {:folder => @root_folder} %>
-		</div>
-	</div>
-		
+    
+    <div id="tree-wrapper">
+        <div class="liner">
+            <%= tag("div", id: "root-folder",
+              data: {filespace: @filespace.id}) %>
+            </div>
+        </div>
+    </div>
+    <div id="upload-wrapper">
+      <div id="trail"></div>
+      <div class="liner">
+        <%= render :partial => 'uploader',
+        :locals =>  {:folder => @root_folder} %>
+      </div>
+    </div>
+        
 </div>
 
 <div id="alog">

@@ -6,7 +6,7 @@ $(function () {
         .jstree({ 
             // List of active plugins
             "plugins" : ["themes", "json", "ui", "dnd", "search",
-                "hotkeys", "contextmenu"],
+                "hotkeys", "contextmenu", "helpers"],
 
             "json" : { 
             
@@ -57,16 +57,24 @@ $(function () {
             $.ajax(url, settings);
         })
         .bind("dblclick.jstree", function(e, data) {
+
             // 'this' is the root div
+	    var inst_id = $(this).data().jstree_instance_id;
+	    var inst = $.jstree._reference(inst_id);
                 
-            if (data == undefined) {
-              folder_id = $(e.target.parentNode).attr("id").replace("node-","");
-            } else {
-              folder_id = data.rslt.parent.attr("id").replace("node-", "");
-            }
-            
-            folder_id = $(e.target.parentNode).attr("id").replace("node-","");
-            action = "/folders/" + folder_id + "/documents"; // Rails URL
+	    var li_node = $(e.target.parentNode);
+            var folder_id = li_node.attr("id").replace("node-","");
+            var action = "/folders/" + folder_id + "/documents"; // Rails URL
+
+	    var path = inst.get_path();
+
+	    var path_string = "<span id=\"leader\">Files for Folder:</span>";
+	    $.each(path, function(index, value) {
+		path_string += "/" + value;
+            });
+
+	    $("#trail").html(path_string);
+
             $("#fileupload").attr("action", action);
             
             $("#fileupload > table > tbody.files").empty();
@@ -111,7 +119,19 @@ $(function () {
 	    $.ajax(url, settings);
         })
         .bind("delete_node.jstree", function (e, data) {
-            alert("Delete node");
+	    // The obj node has already been detached from the JsTree.
+
+	    alert("delete_node");
+	    var obj = data.rslt.obj;
+	    var parent = data.rslt.parent;
+	    var prev = data.rslt.prev;
+
+	    var system = obj.data().system;
+//	    e.stopPropagation();
+
+	    // Create a JSON description of the node to pass to
+	    // create_node.
+
         })
         .bind("move_node.jstree", function (e, data) {
 	    var new_instance = data.inst;

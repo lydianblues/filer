@@ -3,7 +3,6 @@ class CreateDocuments < ActiveRecord::Migration
     create_table :documents do |t|
       t.string :content
       t.string :name
-      t.references :folder
       t.timestamps
     end
   end

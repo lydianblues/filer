@@ -5,37 +5,38 @@ class DocumentsController < ApplicationController
   # a given folder.  Return JSON format.
   #
   def index
-    @documents = Document.where(folder_id: params[:folder_id]).all
-    logger.info "found #{@documents.size} documents"
-    render :json => @documents.collect {|p| p.to_jq_upload }.to_json
+    folder_id = params[:folder_id]
+    @documents = Document.entries_for_folder(folder_id).all
+    render :json => @documents.collect {|p| p.to_jq_upload(folder_id)}.to_json
   end
   
-  def new
-    @document = Document.new(:folder_id => params[:folder_id])
-  end
-  
+  # Upload a file with JSON format
   def create
-    folder = Folder.find(params[:folder_id])
     @document = Document.new(params[:document])
-    folder.documents << @document
+    link = @document.links.build
+    folder_id = params[:folder_id]
+    link.folder_id = folder_id
     if @document.save
-      respond_to do |format|
-        format.html do 
-          render(:json => [@document.to_jq_upload].to_json, 
-            :content_type => 'text/html', :layout => false)
-        end
-        format.json do 
-          render :json => [@document.to_jq_upload].to_json			
-        end
-      end
-    else 
-      render :json => [{:error => "custom_failure"}], :status => 304
+      render :json => [@document.to_jq_upload(folder_id)].to_json			
+    else
+      render :json => [{error: :unprocessable_entity}], :status => 304
     end
   end
     
+  # We destroy the document if and only if it is linked into the current
+  # folder and no other folders.
   def destroy
-    @document = Document.find(params[:id])
-    @document.destroy
+    folder_id = params[:folder_id]
+    document_id = params[:id]
+    count = Link.where(document_id: document_id).size
+    link = Link.where(document_id: document_id, folder_id: folder_id).first
+    ActiveRecord::Base.transaction do
+      link.destroy if link
+      if count == 1
+        document = Document.find(document_id)
+        document.destroy
+      end
+    end
     render :json => true
   end
 

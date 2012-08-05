@@ -22,9 +22,9 @@ class FilespacesController < ApplicationController
       root = @filespace.folders.create(name: "Root")
       @filespace.root_folder = root
       parent_id = root.id
-      ["Incoming", "Current", "Archived", "Trash"].each do |name|
-        # 'leaf' flag defaults to true
-        @filespace.folders.build(name: name, parent_id: parent_id)
+      ["incoming", "current", "archived", "trash"].each do |ntype|
+        f = @filespace.folders.build(name: ntype.titleize, parent_id: parent_id)
+        f.ntype = ntype
       end
       error = false
     end
