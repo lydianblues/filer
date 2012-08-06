@@ -133,6 +133,9 @@ $(function () {
 	    // create_node.
 
         })
+	.bind("send_node.jstree", function(e, data) {
+	    alert("send_node");
+	})
         .bind("move_node.jstree", function (e, data) {
 	    var new_instance = data.inst;
 	    var old_instance = data.rslt.old_instance;
