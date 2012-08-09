@@ -1,0 +1,26 @@
+<div id="panel<%= id %>" class="panel">
+  <div id="controls">
+    <div id="filespace-buttonbar">
+      <%= form_tag @filespace, method: :put do %>
+        <button id="applyButton">Apply</button>
+        <button id="disableButton">Disable</button>
+        <button id="enableButton">Enable</button>
+        <button id="resetButton">Reset</button>
+      <% end %>
+    </div>
+  </div>
+  <div id="tree-wrapper">
+    <div class="liner">
+      <%= tag("div", id: "root-folder",
+          data: {filespace: @filespace.id}) %>
+      </div>
+    </div>
+  </div>
+  <div id="upload-wrapper">
+    <div id="trail"></div>
+    <div class="liner">
+      <%= render :partial => 'uploader',
+      :locals =>  {:folder => @root_folder} %>
+    </div>
+  </div>
+</div>

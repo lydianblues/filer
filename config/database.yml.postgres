@@ -1,0 +1,26 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: filer_development
+  pool: 5
+  username: quosap
+  password: graceling
+  host: /tmp
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: filer_production
+  pool: 5
+  username: quosap
+  password: graceling
+  host: /tmp
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: filer_test
+  pool: 5
+  username: quosap
+  password: graceling
+  host: /tmp
