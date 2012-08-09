@@ -3,9 +3,27 @@
 <% content_for :head do %>
 
     <style>
+        #banner {
+	  list-style-type: none;
+        }
+        #banner > li {
+	  float: left;
+          font-size: 1.5em;
+	  line-height: 1.5em;
+	  padding-bottom: 1em;
+        }
+	#banner > li:nth-child(2) {
+	   float: right;
+           margin-right: 1em;
+        }
+	.spacer {
+	  display: inline-block;
+	  width: 0.5em;
+        }
         #content {
             overflow: hidden;
             margin: 1em 1em 0.5em 1em;
+            clear: left;
         }
 	#controls {
 	    height: 2.5em;
@@ -63,22 +81,9 @@
 
 <% end %>
 
-<div class="demo">
-  <button>A button element</button>
-  <input value="A submit button" type="submit"></input>
-  <a href="#">An anchor</a>
-</div>
-
 <%= javascript_include_tag 'jquery-ui-1.8.21.custom' %>
 <%= stylesheet_link_tag 'ui-lightness/jquery-ui-1.8.21.custom' %>
 <%= javascript_include_tag 'jstree' %>
-
-<script>
-    $(function() {
-        $( "input:submit, a, button", ".demo" ).button();
-        $( "a", ".demo" ).click(function() { return false; });
-    });
-</script>
 
 <script>
     $(function() {
@@ -90,11 +95,10 @@
 
 </script>
 
-<h2>
-  <%= link_to "View All Filespaces", filespaces_path %>
-</h2>
-
-<h2><%= @filespace.name.titleize %><span style="margin-left: 0.5em">File Space</span></h2>
+<ul id="banner">
+     <li><%= @filespace.name.titleize %><span class="spacer"></span>File Space</li>
+     <li><%= link_to "View All Filespaces", filespaces_path %></li>
+</ul>
 
 <div id="content">
     <div id="tabset">

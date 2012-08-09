@@ -7,7 +7,9 @@ class DocumentsController < ApplicationController
   def index
     folder_id = params[:folder_id]
     @documents = Document.entries_for_folder(folder_id).all
-    render :json => @documents.collect {|p| p.to_jq_upload(folder_id)}.to_json
+    json = @documents.collect {|p| p.to_jq_upload(folder_id)}.to_json
+    logger.info(json)
+    render :json => json
   end
   
   # Upload a file with JSON format
