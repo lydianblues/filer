@@ -1,14 +1,4 @@
 <div id="panel<%= id %>" class="panel">
-  <div id="controls">
-    <div id="filespace-buttonbar">
-      <%= form_tag @filespace, method: :put do %>
-        <button id="applyButton">Apply</button>
-        <button id="disableButton">Disable</button>
-        <button id="enableButton">Enable</button>
-        <button id="resetButton">Reset</button>
-      <% end %>
-    </div>
-  </div>
   <div id="tree-wrapper">
     <div class="liner">
       <%= tag("div", id: "root-folder",
@@ -19,8 +9,22 @@
   <div id="upload-wrapper">
     <div id="trail"></div>
     <div class="liner">
-      <%= render :partial => 'uploader',
-      :locals =>  {:folder => @root_folder} %>
+      <div id="filespace-action-tabset">
+        <ul>
+	    <li><a href="#file-viewer">File Viewer</a></li>
+	    <li><a href="#file-uploader">File Uploader</a></li>
+	    <li><a href="#find-files">Find Files</a></li>
+	    <li><a href="#manage-users">Add or Remove Users</a></li>
+	</ul>
+	<div id="file-viewer">
+          <%= render :partial => 'viewer' %>
+	</div>
+	<div id="file-uploader">
+          <%= render :partial => 'uploader',
+            :locals =>  {:folder => @root_folder} %>
+        </div>
+	<div id="find-files">Find Files Panel</div>
+	<div id="manage-users">Add or Remove Users Panel</div>
     </div>
   </div>
 </div>

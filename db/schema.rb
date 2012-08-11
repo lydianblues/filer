@@ -16,6 +16,9 @@ ActiveRecord::Schema.define(:version => 20120803183656) do
   create_table "documents", :force => true do |t|
     t.string   "content"
     t.string   "name"
+    t.integer  "size"
+    t.string   "url"
+    t.integer  "checksum"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end

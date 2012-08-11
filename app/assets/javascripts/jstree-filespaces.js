@@ -64,7 +64,7 @@ $(function () {
                 
 	    var li_node = $(e.target.parentNode);
             var folder_id = li_node.attr("id").replace("node-","");
-            var action = "/folders/" + folder_id + "/documents"; // Rails URL
+            var action = "/folders/" + folder_id + "/uploads"; // Rails URL
 
 	    var path = inst.get_path();
 

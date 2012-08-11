@@ -25,13 +25,6 @@
             margin: 1em 1em 0.5em 1em;
             clear: left;
         }
-	#controls {
-	    height: 2.5em;
-	    background-color: #ffe;
-	    margin-bottom: 0.5em;
-	    border: 2px solid green;
-	    padding: 0.25em;
-        }
 	.panel {
 	    overflow: auto;
         }
@@ -76,23 +69,30 @@
             overflow-y: auto;
             clear: left;
         }
-        
     </style> 
-
 <% end %>
 
-<%= javascript_include_tag 'jquery-ui-1.8.21.custom' %>
+<%= stylesheet_link_tag 'datatables/jquery.dataTables' %>
+<%= stylesheet_link_tag 'datatables/jquery.dataTables_themeroller' %>
 <%= stylesheet_link_tag 'ui-lightness/jquery-ui-1.8.21.custom' %>
+
+<%= javascript_include_tag 'jquery-ui-1.8.21.custom' %>
 <%= javascript_include_tag 'jstree' %>
+<%= javascript_include_tag 'jquery.dataTables.min' %>
 
 <script>
     $(function() {
         $("#filespace-buttonbar").buttonset();
         $("button", "filespace-buttonbar").button();
-        $( "a", ".demo" ).click(function() { return false; });
-        $("#tabset").tabs();
+        $("#filespace-action-tabset").tabs();
+        $("#filespace-chooser-tabset").tabs();
+        $('#file-table').dataTable({
+            "bJQueryUI": true,
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "/folders/1/documents.json"
+        });
     });
-
 </script>
 
 <ul id="banner">
@@ -101,7 +101,7 @@
 </ul>
 
 <div id="content">
-    <div id="tabset">
+    <div id="filespace-chooser-tabset">
         <ul>
 	    <li><a href="#panel1000">User</a></li>
 	    <li><a href="#panel1001">Company</a></li>

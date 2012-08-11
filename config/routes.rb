@@ -4,6 +4,7 @@ Research::Application.routes.draw do
   resources :users
   resources :folders do
     resources :documents
+    resources :uploads
   end
   
   root :to => 'filespaces#index'

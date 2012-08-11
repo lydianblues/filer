@@ -26,7 +26,7 @@ css"><![endif]-->
     <div class="liner">
 
         <%= form_for(Document.new,
-            :url => folder_documents_path(folder),
+            :url => folder_uploads_path(folder),
             :html => {:multipart => true, :id => 'fileupload'}) do |f| %>
 	    <div class="row fileupload-buttonbar">
 	        <div class="span7">
@@ -133,8 +133,8 @@ css"><![endif]-->
         {% } %}</td>
     </tr>
 {% } %}
-
 </script>
+
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
