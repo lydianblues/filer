@@ -17,15 +17,20 @@ class Document < ActiveRecord::Base
     ]
 
     def dt_query(params)
-      query = Document.joins(:links)
-        .where('links.folder_id = ?', params[:folder_id])
+      documents = Arel::Table.new(:documents)
+      links = Arel::Table.new(:links)
+      folder_id = sanitize_sql(params[:folder_id])
+
+      query = documents.project(Arel.sql('*'))
+        .join(links).on(links[:document_id].eq(documents[:id]))
+        .where(links[:folder_id].eq(folder_id))
 
       # Paging
       if params["iDisplayStart"] 
         iDisplayStart =  params["iDisplayStart"].to_i
         iDisplayLength = params["iDisplayLength"].to_i
         if iDisplayLength != -1
-          query = query.limit(iDisplayLength).offset(iDisplayStart)
+          query = query.take(iDisplayLength).skip(iDisplayStart)
         end
       end
 
@@ -41,7 +46,7 @@ class Document < ActiveRecord::Base
             dir = "asc" if dir.blank?
           end
           col = ColumnMap[sort_col_idx]
-          query = query.order(col + " " + dir)
+          query = query.order("#{col} #{dir}")
         end
       end
 
@@ -50,25 +55,41 @@ class Document < ActiveRecord::Base
     
       # This is overly general.  In the filer application we will only
       # search the "name" column.
+      search = nil
       unless sSearch.blank?
         for n in 0..(ColumnMap.length - 1)
           col = ColumnMap[n]
-          query = query.where("#{col} LIKE ?", '%' + sanitize_sql(sSearch) + '%')
+          pattern = '%' + sanitize_sql(sSearch) + '%'
+          t = documents[col].matches(pattern)
+          if search
+            search = search.or(t)
+          else
+            search = t
+          end
         end
       end
     
-      # Individidual column search.
+      # Individual column search.
       for n in 0..(ColumnMap.length - 1)
         col = ColumnMap[n]
         if params["bSearchable_#{n}"] == 'true' &&
           params["sSearch_#{n}"].present?
-          query = query.where("col LIKE ?",
-            '%' + sanitize_sql(params["sSearch_#{n}"]) + '%')
+          pattern = '%' + sanitize_sql(params["sSearch_#{n}"]) + '%'
+          t = documents[col].matches(pattern)
+          if search
+            search = search.or(t)
+          else
+            search = t
+          end
         end
       end
 
+      if search
+        query = query.where(search)
+      end
+
       total_records = Document.entries_for_folder(params["folder_id"]).size
-      results = query.all
+      results = Document.find_by_sql(query)
       format_results(results, total_records, params["sEcho"])
     end
 
@@ -84,9 +105,9 @@ class Document < ActiveRecord::Base
       data = []
       results.each do |r|
         data << [
-          r.name,
-          r.created_at,
-          r.size || 0,
+          "<a href=\"#{r.content.url}\">#{r.name}</a>",
+          r.created_at.localtime.strftime("%m/%d/%Y %I:%M%p"),
+          r.content.size,
           r.checksum || 0
          ]
       end

@@ -69,16 +69,22 @@
             overflow-y: auto;
             clear: left;
         }
+        .clear {
+	   clear: left;
+        }
     </style> 
 <% end %>
 
+<%= stylesheet_link_tag 'tabletools/TableTools' %>
+<%= stylesheet_link_tag 'tabletools/TableTools_JUI' %>
 <%= stylesheet_link_tag 'datatables/jquery.dataTables' %>
 <%= stylesheet_link_tag 'datatables/jquery.dataTables_themeroller' %>
 <%= stylesheet_link_tag 'ui-lightness/jquery-ui-1.8.21.custom' %>
 
 <%= javascript_include_tag 'jquery-ui-1.8.21.custom' %>
 <%= javascript_include_tag 'jstree' %>
-<%= javascript_include_tag 'jquery.dataTables.min' %>
+<%= javascript_include_tag 'jquery.dataTables' %>
+<%= javascript_include_tag 'TableTools' %>
 
 <script>
     $(function() {
@@ -86,11 +92,54 @@
         $("button", "filespace-buttonbar").button();
         $("#filespace-action-tabset").tabs();
         $("#filespace-chooser-tabset").tabs();
+
+        $("#file-viewer").bind(function() {
+            alert("reloading via clicking on tab");
+            var oTable = $("#file-table").dataTable();
+	    oTable.fnReloadAjax();
+        });
+
         $('#file-table').dataTable({
             "bJQueryUI": true,
             "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": "/folders/1/documents.json"
+//          "bServerSide": true,
+            "sAjaxSource": "/folders/1/documents.json",
+	    "bDeferRender": true,
+            "sDom": 'T<"clear">lfrtip',
+	    "oTableTools": {
+		"sRowSelect": "multi",
+		"aButtons": [
+                    "select_all",
+                    "select_none",
+                    {
+                        "sExtends":    "text",
+                        "sButtonText": "Cut",
+                        "fnClick": function(nButton, oConfig) {
+                            var selected  = this.fnGetSelected();
+                            // this.fnSelectNone();
+                            alert("Cutting " + selected.length + " rows");
+                        }
+                    },
+                    {
+                        "sExtends":    "text",
+                        "sButtonText": "Copy",
+                        "fnClick": function(nButton, oConfig) {
+                            var selected  = this.fnGetSelected();
+                            // this.fnSelectNone();
+                            alert("Copying " + selected.length + " rows");
+                        }
+                    },
+                    {
+                        "sExtends":    "text",
+                        "sButtonText": "Paste",
+                        "fnClick": function(nButton, oConfig) {
+                            var selected  = this.fnGetSelected();
+                            // this.fnSelectNone();
+                            alert("Pasting " + selected.length + " rows");
+                        }
+                    }
+                ]
+            }
         });
     });
 </script>
