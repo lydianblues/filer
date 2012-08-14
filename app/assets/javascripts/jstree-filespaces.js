@@ -8,6 +8,7 @@ $(function() {
         this.fnDraw();
    }
 
+  // Create a new plugin for DataTables to reload the table on demand.
   // See http://datatables.net/plug-ins/api#fnReloadAjax.
   $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
   {
@@ -22,7 +23,8 @@ $(function() {
     
       this.oApi._fnServerParams( oSettings, aData );
         
-      oSettings.fnServerData.call( oSettings.oInstance, oSettings.sAjaxSource, aData, function(json) {
+      oSettings.fnServerData.call( oSettings.oInstance, oSettings.sAjaxSource,
+	      aData, function(json) {
           /* Clear the old information from the table */
           that.oApi._fnClearTable( oSettings );
             
@@ -59,7 +61,7 @@ $(function() {
 });
 
 $(function () {
-    $("#root-folder")
+    $(".filespace-tree")
         .bind("before.jstree", function (e, data) {
             $("#alog").append(data.func + "<br />");
         })
@@ -80,11 +82,13 @@ $(function () {
                     // the parameter is the node being loaded 
                     // (may be -1, 0, or undefined when loading the root nodes)
                     "data" : function (n) { 
+	                    var filespace = this.get_container().data()['filespace'];
+debugger;
                         // the result is fed to the AJAX request `data` option
                         return { 
                             "opr" : "get_children", 
                             "id" : n.attr ? n.attr("id").replace("node-","") : 1,
-                            "fs" : $("#root-folder").data("filespace")
+                            "fs" : filespace
                         }; 
                     }
                 }
@@ -133,7 +137,7 @@ $(function () {
 		path_string += "/" + value;
             });
 
-	    $("#trail").html(path_string);
+	    $(".upload-wrapper > .trail").html(path_string);
 
             $("#fileupload").attr("action", action);
             

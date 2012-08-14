@@ -1,5 +1,6 @@
 Research::Application.routes.draw do
-  
+
+  resource :demo  
   resources :filespaces
   resources :users
   resources :folders do

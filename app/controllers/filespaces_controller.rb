@@ -16,24 +16,12 @@ class FilespacesController < ApplicationController
   end
 
   def create
-    error = true
-    @filespace = Filespace.new(params[:filespace])
-    if @filespace.save
-      root = @filespace.folders.create(name: "Root")
-      @filespace.root_folder = root
-      parent_id = root.id
-      ["incoming", "current", "archived", "trash"].each do |ntype|
-        f = @filespace.folders.build(name: ntype.titleize, parent_id: parent_id)
-        f.ntype = ntype
-      end
-      error = false
-    end
-    if !error && @filespace.save
-      flash[:notice] = "Successfully created filespace."
-      redirect_to @filespace
-    else
-      render :action => 'new'
-    end
+    @filespace = Filespace.generate!(params[:filespace])
+  rescue
+    render :action => 'new'
+  else
+    flash[:notice] = "Successfully created filespace."
+    redirect_to @filespace
   end
 
   def edit

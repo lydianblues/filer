@@ -1,4 +1,4 @@
-<% title @filespace.name %>
+<% title "Demo" %>
 
 <% content_for :head do %>
 
@@ -25,31 +25,31 @@
             margin: 1em 1em 0.5em 1em;
             clear: left;
         }
-	.filespace-panel {
+    .filespace-panel {
 	    overflow: auto;
-        }
-        .tree-wrapper {
-            width: 30%;
-            float: left;
-        }
-        .upload-wrapper {
-            width: 70%;
-            float: left;
-        }
-        .tree-wrapper > .liner {
-            border: 2px solid green;
-            height: 38em;
-            padding: 1em;
-            margin-right: 0.5em;
-            overflow-y: auto;
-        }
-        .upload-wrapper > .liner {
-            padding: 1em;
-            border: 2px solid green;
-            overflow-y: auto;
-            height: 34.95em; 
-        }
-	.upload-wrapper > .trail {
+    }
+    .tree-wrapper {
+        width: 30%;
+        float: left;
+    }
+    .upload-wrapper {
+        width: 70%;
+        float: left;
+    }
+    .tree-wrapper > .liner {
+        border: 2px solid green;
+        height: 38em;
+        padding: 1em;
+        margin-right: 0.5em;
+        overflow-y: auto;
+     }
+    .upload-wrapper > .liner {
+        padding: 1em;
+        border: 2px solid green;
+        overflow-y: auto;
+        height: 34.95em; 
+    }
+    .upload-wrapper > .trail {
 	   height: 1.25em;
 	   background-color: #ffe;
 	   margin-bottom: 0.5em;
@@ -106,18 +106,25 @@
 	        oTable.fnReloadAjax();
             }
         });
-		alert($('.file-table').length);
-        $('.file-table').dataTable({
+        // This code is executed once on page load.  We need to initialize each
+        // DataTable on the page.  Use a loop. 
+        $(".file-table").each(function(index, element) {
+            var filespace = $(this).data().filespace;
+            var root_folder = $(this).data().root;
+            debugger;
+        });
+        
+        $(".file-table").dataTable({
             "bJQueryUI": true,
             "bProcessing": true,
 //          "bServerSide": true,
             "sAjaxSource": "/folders/1/documents.json",
-	    "bDeferRender": true,
+            "bDeferRender": true,
             "sDom": 'T<"clear">lfrtip',
-	    "oTableTools": {
-		"sRowSelect": "multi",
-		"aButtons": [
-                    "select_all",
+            "oTableTools": {
+            "sRowSelect": "multi",
+            "aButtons": [
+                "select_all",
                     "select_none",
                     {
                         "sExtends":    "text",
@@ -152,23 +159,17 @@
     });
 </script>
 
-<ul id="banner">
-     <li><%= @filespace.name.titleize %><span class="spacer"></span>File Space</li>
-     <li><%= link_to "View All Filespaces", filespaces_path %></li>
-</ul>
-
 <div id="content">
     <div class="filespace-chooser-tabset">
         <ul>
-	    <li><a href="#filespace-<%= @filespace.id %>">Project</a></li>
-	</ul>
-	<%= render(partial: 'filespace', locals:
-          {id: @filespace.id, root: @root_folder.id}) %>
+	    	<li><a href="#filespace-<%= @user_filespace.id %>">User</a></li>
+	    	<li><a href="#filespace-<%= @company_filespace.id %>">Company</a></li>
+		</ul>
+		<%= render(partial: 'filespaces/filespace', locals:
+          {id: @user_filespace.id, root: @user_filespace.folder_id}) %>
+		<%= render(partial: 'filespaces/filespace', locals:
+          {id: @company_filespace.id, root: @company_filespace.folder_id}) %>
     </div>
 
 </div>
-
-
-
-
 

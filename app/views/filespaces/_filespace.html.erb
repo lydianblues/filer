@@ -1,30 +1,39 @@
-<div id="panel<%= id %>" class="panel">
-  <div id="tree-wrapper">
+<div id="filespace-<%= id %>" data-filespace="<%= id %>"
+  data-root-folder="<%= root %>" class="filespace-panel">
+
+  <div class="tree-wrapper">
     <div class="liner">
-      <%= tag("div", id: "root-folder",
-          data: {filespace: @filespace.id}) %>
+      <%= tag("div", {id: "node-#{root}", "class" => "filespace-tree",
+        "data" => {"filespace" => id, "root-folder" => root}}, true) %>
       </div>
     </div>
   </div>
-  <div id="upload-wrapper">
-    <div id="trail"></div>
+
+  <div class="upload-wrapper">
+    <div class="trail"></div>
     <div class="liner">
-      <div id="filespace-action-tabset">
+      <div class="filespace-action-tabset">
         <ul>
-	    <li><a href="#file-viewer">File Viewer</a></li>
-	    <li><a href="#file-uploader">File Uploader</a></li>
-	    <li><a href="#find-files">Search Filespace</a></li>
-	    <li><a href="#manage-users">Filespace Members</a></li>
-	</ul>
-	<div id="file-viewer">
-          <%= render :partial => 'viewer' %>
+          <li><%= tag("a", {href: "file-viewer-#{id}"}, true) %></a></li>
+          <li><%= tag("a", {href: "file-uploader-#{id}"}, true) %></a></li>
+          <li><%= tag("a", {href: "file-finder-#{id}"}, true) %></a></li>
+          <li><%= tag("a", {href: "user-manager-#{id}"}, true) %></a></li>
+	    </ul>
+	    <%= tag("div", {id: "file-viewer-#{id}"}, true) %>
+          <%= render(:partial => 'filespaces/viewer',
+            :locals => {filespace: id, folder: root}) %>
+	    </div>
+	    <%= tag("div", {id: "file-uploader-#{id}"}, true) %>
+          <%= render :partial => 'filespaces/uploader',
+            :locals =>  {:folder => root} %>
+	    </div>
+	    <%= tag("div", {id: "file-finder-#{id}"}, true) %>
+          Find Files Panel
+	    </div>
+	    <%= tag("div", {id: "user-manager-#{id}"}, true) %>
+          Add or Remove Users Panel
+	    </div>
+	  </div>
 	</div>
-	<div id="file-uploader">
-          <%= render :partial => 'uploader',
-            :locals =>  {:folder => @root_folder} %>
-        </div>
-	<div id="find-files">Find Files Panel</div>
-	<div id="manage-users">Add or Remove Users Panel</div>
-    </div>
   </div>
 </div>
