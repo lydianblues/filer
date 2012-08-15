@@ -4,21 +4,21 @@
 
     <style>
         #banner {
-	  list-style-type: none;
+      list-style-type: none;
         }
         #banner > li {
-	  float: left;
+      float: left;
           font-size: 1.5em;
-	  line-height: 1.5em;
-	  padding-bottom: 1em;
+      line-height: 1.5em;
+      padding-bottom: 1em;
         }
-	#banner > li:nth-child(2) {
-	   float: right;
+    #banner > li:nth-child(2) {
+       float: right;
            margin-right: 1em;
         }
-	.spacer {
-	  display: inline-block;
-	  width: 0.5em;
+    .spacer {
+      display: inline-block;
+      width: 0.5em;
         }
         #content {
             overflow: hidden;
@@ -26,7 +26,7 @@
             clear: left;
         }
     .filespace-panel {
-	    overflow: auto;
+        overflow: auto;
     }
     .tree-wrapper {
         width: 30%;
@@ -50,16 +50,16 @@
         height: 34.95em; 
     }
     .upload-wrapper > .trail {
-	   height: 1.25em;
-	   background-color: #ffe;
-	   margin-bottom: 0.5em;
-	   border: 2px solid green;
-	   padding: 0.25em;
-	   font-size: large;
+       height: 1.25em;
+       background-color: #ffe;
+       margin-bottom: 0.5em;
+       border: 2px solid green;
+       padding: 0.25em;
+       font-size: large;
         }
-	#leader {
-	  color: green;
-	  margin-right: 1em;
+    #leader {
+      color: green;
+      margin-right: 1em;
         }
         #alog {
             margin: 0.5em 1em 0em 1em;
@@ -70,7 +70,7 @@
             clear: left;
         }
         .clear {
-	   clear: left;
+       clear: left;
         }
     </style> 
 <% end %>
@@ -94,67 +94,68 @@
         $(".filespace-chooser-tabset").tabs();
 
         $(".filespace-action-tabset").bind('tabsselect', function(event, ui) {
-            var oTable,
-              data =  $(ui.panel).closest(".filespace-panel").data(),
-              filespace_id = data.filespace,
-              root_folder_id = data.rootFolder;
+
+            var data =  $(ui.panel).closest(".filespace-panel").data(),
+              filespace = data.filespace,
+              root_folder = data.rootFolder,
+              oTable = $("#file-table-" + filespace).dataTable();
 
             if (ui.index == 0) {
-                oTable = $("#file-table").dataTable();
                 // The URL to use is already set in the DataTables configuration
                 // data.  We are not changing it here.
-	        oTable.fnReloadAjax();
+                oTable.fnReloadAjax();
             }
         });
-        // This code is executed once on page load.  We need to initialize each
-        // DataTable on the page.  Use a loop. 
+
+        // This code is executed once on page load.  We need to initialize
+        // every DataTable on the page.
         $(".file-table").each(function(index, element) {
-            var filespace = $(this).data().filespace;
+
+            var filespace = $(this).data().filespace; // unused
             var root_folder = $(this).data().root;
-            debugger;
-        });
-        
-        $(".file-table").dataTable({
-            "bJQueryUI": true,
-            "bProcessing": true,
-//          "bServerSide": true,
-            "sAjaxSource": "/folders/1/documents.json",
-            "bDeferRender": true,
-            "sDom": 'T<"clear">lfrtip',
-            "oTableTools": {
-            "sRowSelect": "multi",
-            "aButtons": [
-                "select_all",
-                    "select_none",
-                    {
-                        "sExtends":    "text",
-                        "sButtonText": "Cut",
-                        "fnClick": function(nButton, oConfig) {
-                            var selected  = this.fnGetSelected();
-                            // this.fnSelectNone();
-                            alert("Cutting " + selected.length + " rows");
+            
+            $(this).dataTable({
+                "bJQueryUI": true,
+                "bProcessing": true,
+    //          "bServerSide": true,
+                "sAjaxSource": "/folders/" + root_folder + "/documents.json",
+                "bDeferRender": true,
+                "sDom": 'T<"clear">lfrtip',
+                "oTableTools": {
+                "sRowSelect": "multi",
+                "aButtons": [
+                    "select_all",
+                        "select_none",
+                        {
+                            "sExtends":    "text",
+                            "sButtonText": "Cut",
+                            "fnClick": function(nButton, oConfig) {
+                                var selected  = this.fnGetSelected();
+                                // this.fnSelectNone();
+                                alert("Cutting " + selected.length + " rows");
+                            }
+                        },
+                        {
+                            "sExtends":    "text",
+                            "sButtonText": "Copy",
+                            "fnClick": function(nButton, oConfig) {
+                                var selected  = this.fnGetSelected();
+                                // this.fnSelectNone();
+                                alert("Copying " + selected.length + " rows");
+                            }
+                        },
+                        {
+                            "sExtends":    "text",
+                            "sButtonText": "Paste",
+                            "fnClick": function(nButton, oConfig) {
+                                var selected  = this.fnGetSelected();
+                                // this.fnSelectNone();
+                                alert("Pasting " + selected.length + " rows");
+                            }
                         }
-                    },
-                    {
-                        "sExtends":    "text",
-                        "sButtonText": "Copy",
-                        "fnClick": function(nButton, oConfig) {
-                            var selected  = this.fnGetSelected();
-                            // this.fnSelectNone();
-                            alert("Copying " + selected.length + " rows");
-                        }
-                    },
-                    {
-                        "sExtends":    "text",
-                        "sButtonText": "Paste",
-                        "fnClick": function(nButton, oConfig) {
-                            var selected  = this.fnGetSelected();
-                            // this.fnSelectNone();
-                            alert("Pasting " + selected.length + " rows");
-                        }
-                    }
-                ]
-            }
+                    ]
+                }
+            });
         });
     });
 </script>
@@ -162,12 +163,12 @@
 <div id="content">
     <div class="filespace-chooser-tabset">
         <ul>
-	    	<li><a href="#filespace-<%= @user_filespace.id %>">User</a></li>
-	    	<li><a href="#filespace-<%= @company_filespace.id %>">Company</a></li>
-		</ul>
-		<%= render(partial: 'filespaces/filespace', locals:
+            <li><a href="#filespace-<%= @user_filespace.id %>">User</a></li>
+            <li><a href="#filespace-<%= @company_filespace.id %>">Company</a></li>
+        </ul>
+        <%= render(partial: 'filespaces/filespace', locals:
           {id: @user_filespace.id, root: @user_filespace.folder_id}) %>
-		<%= render(partial: 'filespaces/filespace', locals:
+        <%= render(partial: 'filespaces/filespace', locals:
           {id: @company_filespace.id, root: @company_filespace.folder_id}) %>
     </div>
 

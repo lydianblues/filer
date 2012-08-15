@@ -9,31 +9,51 @@
     </div>
   </div>
 
-  <div class="upload-wrapper">
-    <div class="trail"></div>
-    <div class="liner">
-      <div class="filespace-action-tabset">
-        <ul>
-          <li><%= tag("a", {href: "file-viewer-#{id}"}, true) %></a></li>
-          <li><%= tag("a", {href: "file-uploader-#{id}"}, true) %></a></li>
-          <li><%= tag("a", {href: "file-finder-#{id}"}, true) %></a></li>
-          <li><%= tag("a", {href: "user-manager-#{id}"}, true) %></a></li>
-	    </ul>
-	    <%= tag("div", {id: "file-viewer-#{id}"}, true) %>
-          <%= render(:partial => 'filespaces/viewer',
-            :locals => {filespace: id, folder: root}) %>
-	    </div>
-	    <%= tag("div", {id: "file-uploader-#{id}"}, true) %>
-          <%= render :partial => 'filespaces/uploader',
-            :locals =>  {:folder => root} %>
-	    </div>
-	    <%= tag("div", {id: "file-finder-#{id}"}, true) %>
-          Find Files Panel
-	    </div>
-	    <%= tag("div", {id: "user-manager-#{id}"}, true) %>
-          Add or Remove Users Panel
-	    </div>
-	  </div>
+    <div class="upload-wrapper">
+        <div class="trail"></div>
+        <div class="liner">
+            <div class="filespace-action-tabset">
+                <ul>
+                    <li><%= tag("a", {href: "#file-viewer-#{id}"}, true) %>
+                        View Files
+                    </a></li>
+                    <li><%= tag("a", {href: "#file-uploader-#{id}"}, true) %>
+                        Upload Files
+                    </a></li>
+                    <li><%= tag("a", {href: "#file-finder-#{id}"}, true) %>
+                        Search Filespace
+                    </a></li>
+                    <li><%= tag("a", {href: "#user-manager-#{id}"}, true) %>
+                        Add or Remove Users
+                    </a></li>
+                    <li><%= tag("a", {href: "#filespace-manager-#{id}"}, true) %>
+                        Share Filespace
+                    </a></li>
+	        </ul>
+
+	        <%= tag("div", {id: "file-viewer-#{id}"}, true) %>
+                    <%= render(:partial => 'filespaces/viewer',
+                      :locals => {filespace: id, folder: root}) %>
+	        </div>
+
+	        <%= tag("div", {id: "file-uploader-#{id}"}, true) %>
+                    <%= render(:partial => 'filespaces/uploader',
+                      :locals =>  {:folder => root}) %>
+	        </div>
+
+	        <%= tag("div", {id: "file-finder-#{id}"}, true) %>
+                    Find Files Panel
+	        </div>
+
+	        <%= tag("div", {id: "user-manager-#{id}"}, true) %>
+                    Add or Remove Users Panel
+	        </div>
+
+	        <%= tag("div", {id: "filespace-manager-#{id}"}, true) %>
+                    Share Filespace Panel
+	        </div>
+
+            </div>
 	</div>
-  </div>
+    </div>
 </div>

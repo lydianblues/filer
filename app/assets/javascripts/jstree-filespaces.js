@@ -5,12 +5,14 @@ $(function() {
         if (typeof sNewSource != 'undefined' && sNewSource != null ) {
             oSettings.sAjaxSource = sNewSource;
         }
+        console.log("changed ajax source to " + sNewSource);
         this.fnDraw();
    }
 
   // Create a new plugin for DataTables to reload the table on demand.
   // See http://datatables.net/plug-ins/api#fnReloadAjax.
-  $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
+  $.fn.dataTableExt.oApi.fnReloadAjax = function(oSettings, sNewSource,
+    fnCallback, bStandingRedraw)
   {
       if ( typeof sNewSource != 'undefined' && sNewSource != null )
       {
@@ -24,7 +26,7 @@ $(function() {
       this.oApi._fnServerParams( oSettings, aData );
         
       oSettings.fnServerData.call( oSettings.oInstance, oSettings.sAjaxSource,
-	      aData, function(json) {
+          aData, function(json) {
           /* Clear the old information from the table */
           that.oApi._fnClearTable( oSettings );
             
@@ -57,15 +59,14 @@ $(function() {
               fnCallback( oSettings );
           }
       }, oSettings );
+      console.log("reloading datatables via ajax");
+
   }
 });
 
 $(function () {
-    $(".filespace-tree")
-        .bind("before.jstree", function (e, data) {
-            $("#alog").append(data.func + "<br />");
-        })
-        .jstree({ 
+    $(".filespace-tree").each(function() {
+        $(this).jstree({ 
             // List of active plugins
             "plugins" : ["themes", "json", "ui", "dnd", "search",
                 "hotkeys", "contextmenu", "helpers"],
@@ -82,8 +83,7 @@ $(function () {
                     // the parameter is the node being loaded 
                     // (may be -1, 0, or undefined when loading the root nodes)
                     "data" : function (n) { 
-	                    var filespace = this.get_container().data()['filespace'];
-debugger;
+                        var filespace = this.get_container().data()['filespace'];
                         // the result is fed to the AJAX request `data` option
                         return { 
                             "opr" : "get_children", 
@@ -95,171 +95,165 @@ debugger;
             }
         })
         .bind("create_node.jstree", function(e, data) {
-	    var parent = $(data.rslt.parent);
-	    var child = $(data.rslt.obj);
-            var parent_id = parent.attr("id").replace("node-", "");
-            var url = "/folders.json"; // Rails URL
-	    var settings = {
-		dataType: 'json',
-		success: function(node_data, textStatus, jqXHR) {
-		    id = "node-" + node_data["id"];
-		    child.attr("id", id);
-		},
-		error: function(jqXHR, textStatus, errorThown) {
-		    // Do rollback if create fails.
-		    alert("Create failure");
-		},
-		type: 'POST',
-		accepts: 'json',
-		data: {
-		    operation: 'create_node',
-		    folder: {
-			parent_id: parent_id
-		    }
-		}
-	    };
+            var parent = $(data.rslt.parent),
+              child = $(data.rslt.obj),
+              parent_id = parent.attr("id").replace("node-", ""),
+              url = "/folders.json", // Rails URL
+              settings = {
+                  dataType: 'json',
+                  success: function(node_data, textStatus, jqXHR) {
+                      var id = "node-" + node_data["id"];
+                      child.attr("id", id);
+                  },
+                  error: function(jqXHR, textStatus, errorThown) {
+                      // Do rollback if create fails.
+                      alert("Create failure");
+                  },
+                  type: 'POST',
+                  accepts: 'json',
+                  data: {
+                      operation: 'create_node',
+                      folder: {
+                          parent_id: parent_id
+                      }
+                  }
+              }; // end of list of vars
             $.ajax(url, settings);
         })
         .bind("dblclick.jstree", function(e, data) {
+            // 'this' is the root div of a JsTree.
+            var inst_id = $(this).data().jstree_instance_id,
+                inst = $.jstree._reference(inst_id),
+                li_node = $(e.target.parentNode),
+                folder_id = li_node.attr("id").replace("node-",""),
+                upload_action = "/folders/" + folder_id + "/uploads", // Rails URL
+                filespace = inst.get_container().data().filespace,
+                oTable = $("#file-table-" + filespace).dataTable(),
+                file_action =
+                    "/folders/" + folder_id + "/documents.json", // Rails URL
+                path = inst.get_path(),
+                path_string = "<span id=\"leader\">Files for Folder:</span>";
 
-            // 'this' is the root div
-	    var inst_id = $(this).data().jstree_instance_id;
-	    var inst = $.jstree._reference(inst_id);
-                
-	    var li_node = $(e.target.parentNode);
-            var folder_id = li_node.attr("id").replace("node-","");
-            var action = "/folders/" + folder_id + "/uploads"; // Rails URL
-
-	    var path = inst.get_path();
-
-	    var path_string = "<span id=\"leader\">Files for Folder:</span>";
-	    $.each(path, function(index, value) {
-		path_string += "/" + value;
+            $.each(path, function(index, value) {
+                path_string += "/" + value;
             });
 
-	    $(".upload-wrapper > .trail").html(path_string);
-
-            $("#fileupload").attr("action", action);
-            
+            $(".upload-wrapper > .trail").html(path_string);
+            $("#fileupload").attr("action", upload_action);
             $("#fileupload > table > tbody.files").empty();
-            
+                
             // This function is copied from the uploader initialization
             // function in _uploader.html.erb.  Very un-dry.  This is the
             // only direct tie-in with the uploader.
-             $.getJSON($('#fileupload').prop('action'), function (files) {
-                  var fu = $('#fileupload').data('fileupload'), 
+            $.getJSON($('#fileupload').prop('action'), function (files) {
+                var fu = $('#fileupload').data('fileupload'), 
                     template;
-                  fu._adjustMaxNumberOfFiles(-files.length);
-                  template = fu._renderDownload(files)
+                fu._adjustMaxNumberOfFiles(-files.length);
+                template = fu._renderDownload(files)
                     .appendTo($('#fileupload .files'));
-                  // Force reflow:
-                  fu._reflow = fu._transition && template.length &&
+                // Force reflow:
+                fu._reflow = fu._transition && template.length &&
                     template[0].offsetWidth;
-                  template.addClass('in');
-                  $('#loading').remove();
-                });
+                template.addClass('in');
+                $('#loading').remove();
+            });
 
-	    // Install a new URL into DataTables.
-            var oTable = $("#file-table").dataTable();
-            var url = "/folders/" + folder_id + "/documents.json"; // Rails URL
-	    oTable.fnNewAjax(url); 
-	    oTable.fnReloadAjax();
+            // Install a new URL into DataTables.
+            oTable.fnNewAjax(file_action); 
+            oTable.fnReloadAjax();
         })
         .bind("rename_node.jstree", function (e, data) {
-            var obj_id = data.rslt.obj.attr("id").replace("node-", "");
-            var url = "/folders/" + obj_id + ".json"; // Rails URL
-	    var settings = {
-		dataType: 'json',
-		success: function(data, textStatus, jqXHR) {
-		    // alert("Rename success");
-		},
-		error: function(jqXHR, textStatus, errorThown) {
-		    alert("Rename failure");
-		},
-		type: 'POST',
-		accepts: 'json',
-		data: {
-		    _method: 'PUT',
-		    operation: "rename_node",
-		    folder: {
-			name: data.rslt.title
-		    }
-		}
-	    };
-	    $.ajax(url, settings);
+            var obj_id = data.rslt.obj.attr("id").replace("node-", ""),
+                url = "/folders/" + obj_id + ".json", // Rails URL
+                settings = {
+                    dataType: 'json',
+                    success: function(data, textStatus, jqXHR) {
+                    // alert("Rename success");
+                    },
+                    error: function(jqXHR, textStatus, errorThown) {
+                        alert("Rename failure");
+                    },
+                    type: 'POST',
+                    accepts: 'json',
+                    data: {
+                        _method: 'PUT',
+                        operation: "rename_node",
+                        folder: {
+                            name: data.rslt.title
+                        }
+                    }
+                };
+            $.ajax(url, settings);
         })
         .bind("delete_node.jstree", function (e, data) {
-	    // The obj node has already been detached from the JsTree.
+            // The obj node has already been detached from the JsTree.
 
-	    alert("delete_node");
-	    var obj = data.rslt.obj;
-	    var parent = data.rslt.parent;
-	    var prev = data.rslt.prev;
-
-	    var system = obj.data().system;
-//	    e.stopPropagation();
-
-	    // Create a JSON description of the node to pass to
-	    // create_node.
+            alert("delete_node");
+            var obj = data.rslt.obj,
+                parent = data.rslt.parent,
+                prev = data.rslt.prev,
+                system = obj.data().system;
+        
+            // Create a JSON description of the node to pass to
+            // create_node.
 
         })
-	.bind("send_node.jstree", function(e, data) {
-	    alert("send_node");
-	})
+        .bind("send_node.jstree", function(e, data) {
+            alert("send_node");
+        })
         .bind("move_node.jstree", function (e, data) {
-	    var new_instance = data.inst;
-	    var old_instance = data.rslt.old_instance;
-	    var old_filespace = old_instance.get_container().data("filespace");
-	    var new_filespace = new_instance.get_container().data("filespace");
-	    var old_parent = data.rslt.old_parent;
-	    var new_parent = data.rslt.parent;
-	    var is_multi = data.rslt.is_multi;
-	    var child = data.rslt.obj;
-            var child_id = child.attr("id").replace("node-", "");
-            var url = "/folders/" + child_id + ".json"; // Rails URL
-
-	    var old_parent_id;
-	    var new_parent_id;
-
-	    if (old_parent === -1) {
-		old_parent_id = "-1";
+            var new_instance = data.inst,
+                old_instance = data.rslt.old_instance,
+                old_filespace = old_instance.get_container().data("filespace"),
+                new_filespace = new_instance.get_container().data("filespace"),
+                old_parent = data.rslt.old_parent,
+                new_parent = data.rslt.parent,
+                is_multi = data.rslt.is_multi,
+                child = data.rslt.obj,
+                child_id = child.attr("id").replace("node-", ""),
+                url = "/folders/" + child_id + ".json", // Rails URL
+                old_parent_id,
+                new_parent_id,
+                settings;
+                      
+            if (old_parent === -1) {
+                old_parent_id = "-1";
             } else {
-		old_parent_id = old_parent.attr("id").replace("node-", "");
+                old_parent_id = old_parent.attr("id").replace("node-", "");
             }
-	    if (new_parent === -1) {
-		new_parent_id = "-1";
+            if (new_parent === -1) {
+                new_parent_id = "-1";
             } else {
-		new_parent_id = new_parent.attr("id").replace("node-", "");
+                new_parent_id = new_parent.attr("id").replace("node-", "");
             }
 
-	    var settings = {
-		dataType: 'json',
-		success: function(data, textStatus, jqXHR) {
-		    // alert("Move success");
-		},
-		error: function(jqXHR, textStatus, errorThown) {
-		    alert("Move failure");
-		},
-		type: 'POST',
-		accepts: 'json',
-		data: {
-		    _method: 'PUT',
-		    operation: 'move_node',
-		    mover: {
-			old_filespace: old_filespace,
-			new_filespace: new_filespace,
-			old_parent: old_parent_id,
-			new_parent: new_parent_id,
-                    }
-		}
-	    };
-	    $.ajax(url, settings);
-
-	    
+            settings = {
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR) {
+                    // alert("Move success");
+                },
+                error: function(jqXHR, textStatus, errorThown) {
+                    alert("Move failure");
+                },
+                type: 'POST',
+                accepts: 'json',
+                data: {
+            	    _method: 'PUT',
+            	    operation: 'move_node',
+            	    mover: {
+            	        old_filespace: old_filespace,
+            	        new_filespace: new_filespace,
+            	        old_parent: old_parent_id,
+            	        new_parent: new_parent_id,
+            	    }
+                }
+            };
+            $.ajax(url, settings);
         })
         .bind("copy_node.jstree", function (e, data) {
             alert("Copy node");
         });
+    });
 });    
 
 

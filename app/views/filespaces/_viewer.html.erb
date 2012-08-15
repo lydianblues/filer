@@ -1,11 +1,11 @@
-<%= tag("table", {class: "file-table",
-    data: {filespace: filespace, root: folder}})%>
+<%= tag("table", {class: "file-table", id: "file-table-#{filespace}",
+    data: {filespace: filespace, root: folder}}, true)%>
     <thead>
         <tr> 
-	        <th>Name</th>
+            <th>Name</th>
             <th>Uploaded At</th>
             <th>Size</th>
-	        <th>Checksum</th>
+            <th>Checksum</th>
          </tr>
     </thead>
     <tbody>
