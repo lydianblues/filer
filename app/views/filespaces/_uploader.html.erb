@@ -27,7 +27,8 @@ css"><![endif]-->
 
         <%= form_for(Document.new,
             :url => folder_uploads_path(folder),
-            :html => {:multipart => true, :id => 'fileupload'}) do |f| %>
+            :html => {:multipart => true,
+                :id => "fileupload-#{filespace}", :class => "fileupload-control"}) do |f| %>
 	    <div class="row fileupload-buttonbar">
 	        <div class="span7">
 	            <span class="btn btn-success fileinput-button">
@@ -135,8 +136,14 @@ css"><![endif]-->
 {% } %}
 </script>
 
+<!-- Don't need a download template --MBS -->
+<script id = "template-download" type="text/xtmpl">
+    <tr class="template-download fade"></tr>
+</script>
+
+<!-- Renamed to x-template-download --MBS -->
 <!-- The template to display files available for download -->
-<script id="template-download" type="text/x-tmpl">
+<script id="x-template-download" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-download fade">
         {% if (file.error) { %}
@@ -168,22 +175,9 @@ css"><![endif]-->
 <script>
     $(function () {
         // Initialize the jQuery File Upload widget:
-        $('#fileupload').fileupload();
-        // 
-        // Load existing files:
-        $.getJSON($('#fileupload').prop('action'), function (files) {
-          var fu = $('#fileupload').data('fileupload'), 
-            template;
-          fu._adjustMaxNumberOfFiles(-files.length);
-          template = fu._renderDownload(files)
-            .appendTo($('#fileupload .files'));
-          // Force reflow:
-          fu._reflow = fu._transition && template.length &&
-            template[0].offsetWidth;
-          template.addClass('in');
-          $('#loading').remove();
+        $(".fileupload-control").each(function(index, element) {
+            $(this).fileupload();
         });
-
     });
 </script>
 

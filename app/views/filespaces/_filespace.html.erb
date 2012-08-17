@@ -3,6 +3,11 @@
 
   <div class="tree-wrapper">
     <div class="liner">
+      <div id="explain-tree">
+	Double-click on a folder to select it.  Then click <em>View Files</em>
+        to view the files in the folder, or click <em>Upload Files</em> to
+        upload files to the folder.
+      </div>
       <%= tag("div", {id: "node-#{root}", "class" => "filespace-tree",
         "data" => {"filespace" => id, "root-folder" => root}}, true) %>
       </div>
@@ -38,19 +43,39 @@
 
 	        <%= tag("div", {id: "file-uploader-#{id}"}, true) %>
                     <%= render(:partial => 'filespaces/uploader',
-                      :locals =>  {:folder => root}) %>
+                      :locals =>  {filespace: id, :folder => root}) %>
 	        </div>
 
 	        <%= tag("div", {id: "file-finder-#{id}"}, true) %>
-                    Find Files Panel
+                    <h2>Search Filespaces Panel</h2>
+
+                    Here we will have a search box that will search over all the
+                    file names in all filespaces having the current user as a
+                    member. The search results will be displayed as a scrollable
+                    list of links that appear to the user as:
+                    <p><pre>
+                        <u>&lt;filespace&gt;:/&lt;folder&gt;/&lt;folder&gt;/.../&lt;file&gt;</u>                   </pre></p>
+		    When the user clicks on a link, the correct filespace,
+                    folder, and file are selected in the <em>View Files</em>
+                    panel.  The search does not cover folder names, only file
+                    names. If the tab for that filespace is not in the filespace tab
+                    bar, it will be added.
 	        </div>
 
 	        <%= tag("div", {id: "user-manager-#{id}"}, true) %>
-                    Add or Remove Users Panel
+                    <h1>Add or Remove Users Panel</h1>
+                    This tab will only show up for an owner of the filespace.  The owner
+                    can add any Quosap user as a member of the filespace.  This does
+                    not grant any access permissions in itself, it merely makes the
+                    new members name appear as a candidate to add to the sharing list
+                    of any folder in the filespace.  That is, you can't share a folder
+                    to a user is not a member of the filespace.
 	        </div>
 
 	        <%= tag("div", {id: "filespace-manager-#{id}"}, true) %>
-                    Share Filespace Panel
+                    <h1>Share Filespace Panel</h1>
+		    It may be possible to add new owners, editors, or viewers to the filespace
+                    as a whole.  We have to work out exactly what these concepts mean.
 	        </div>
 
             </div>
