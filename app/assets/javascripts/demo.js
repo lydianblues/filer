@@ -1,3 +1,6 @@
+// Part of the solution to the FOUC problem.
+$('html').hide();
+
 $(function() {
     $("#filespace-buttonbar").buttonset();
     $("button", "filespace-buttonbar").button();
@@ -78,4 +81,5 @@ $(function() {
             }
         });
     });
+     $('html').show(); // the other half of the FOUC solution
 });

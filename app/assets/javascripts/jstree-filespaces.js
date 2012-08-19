@@ -145,9 +145,9 @@ $(function () {
             file_upload_form.attr("action", upload_action);
             $("table > tbody.files", file_upload_form).empty();
                 
-            // This function is copied from the uploader initialization
-            // function in _uploader.html.erb.  Very un-dry.  This is the
-            // only direct tie-in with the uploader.
+            // This function is derived from the uploader initialization
+            // function in _uploader.html.erb.  This is the only direct
+            // tie-in with the uploader.
             $.getJSON(upload_action, function (files) {
                 var fu = file_upload_form.data('fileupload'), 
                     template;
