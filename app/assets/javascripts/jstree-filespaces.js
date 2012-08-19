@@ -5,7 +5,7 @@ $(function() {
         if (typeof sNewSource != 'undefined' && sNewSource != null ) {
             oSettings.sAjaxSource = sNewSource;
         }
-        console.log("changed ajax source to " + sNewSource);
+        console.log("changed ajax source for datatables to " + sNewSource);
         this.fnDraw();
    }
 
@@ -122,35 +122,38 @@ $(function () {
         })
         .bind("dblclick.jstree", function(e, data) {
             // 'this' is the root div of a JsTree.
+            // debugger;
             var inst_id = $(this).data().jstree_instance_id,
                 inst = $.jstree._reference(inst_id),
                 li_node = $(e.target.parentNode),
                 folder_id = li_node.attr("id").replace("node-",""),
                 upload_action = "/folders/" + folder_id + "/uploads", // Rails URL
                 filespace = inst.get_container().data().filespace,
+                file_upload_form = $("#fileupload-form-" + filespace),
+                filespace_panel = $("#filespace-" + filespace)
                 oTable = $("#file-table-" + filespace).dataTable(),
                 file_action =
                     "/folders/" + folder_id + "/documents.json", // Rails URL
-                path = inst.get_path(),
-                path_string = "<span id=\"leader\">Files for Folder:</span>";
+                path = inst.get_path(li_node),
+                path_string = "<span id=\"leader\">Active Folder:</span>";
 
             $.each(path, function(index, value) {
                 path_string += "/" + value;
             });
 
-            $(".upload-wrapper > .trail").html(path_string);
-            $("#fileupload").attr("action", upload_action);
-            $("#fileupload > table > tbody.files").empty();
+            $(".trail", filespace_panel).html(path_string);
+            file_upload_form.attr("action", upload_action);
+            $("table > tbody.files", file_upload_form).empty();
                 
             // This function is copied from the uploader initialization
             // function in _uploader.html.erb.  Very un-dry.  This is the
             // only direct tie-in with the uploader.
-            $.getJSON($('#fileupload').prop('action'), function (files) {
-                var fu = $('#fileupload').data('fileupload'), 
+            $.getJSON(upload_action, function (files) {
+                var fu = file_upload_form.data('fileupload'), 
                     template;
                 fu._adjustMaxNumberOfFiles(-files.length);
                 template = fu._renderDownload(files)
-                    .appendTo($('#fileupload .files'));
+                    .appendTo('.files', file_upload_form);
                 // Force reflow:
                 fu._reflow = fu._transition && template.length &&
                     template[0].offsetWidth;
@@ -161,6 +164,8 @@ $(function () {
             // Install a new URL into DataTables.
             oTable.fnNewAjax(file_action); 
             oTable.fnReloadAjax();
+            console.log("upload_action: " + upload_action);
+            console.log("file_action: " + file_action);
         })
         .bind("rename_node.jstree", function (e, data) {
             var obj_id = data.rslt.obj.attr("id").replace("node-", ""),

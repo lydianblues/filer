@@ -2,7 +2,12 @@ class Filespace < ActiveRecord::Base
   # attr_accessible :title, :body
   attr_accessible :name
   has_many :folders
-  belongs_to :root_folder, foreign_key: :folder_id, class_name: Folder
+  belongs_to :root_folder, class_name: Folder
+  belongs_to :current_folder, class_name: Folder
+  belongs_to :incoming_folder, class_name: Folder
+  belongs_to :trash_folder, class_name: Folder
+  belongs_to :archived_folder, class_name: Folder
+  
   validates_presence_of :name
 
   # Set up a new filespace.
@@ -15,6 +20,7 @@ class Filespace < ActiveRecord::Base
       ["incoming", "current", "archived", "trash"].each do |ntype|
         f = filespace.folders.build(name: ntype.titleize, parent_id: parent_id)
         f.ntype = ntype
+        filespace.send("#{ntype}_folder=", f)
       end
       filespace.save!
       filespace

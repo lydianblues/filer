@@ -25,9 +25,13 @@ ActiveRecord::Schema.define(:version => 20120803183656) do
 
   create_table "filespaces", :force => true do |t|
     t.string   "name"
-    t.integer  "folder_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "root_folder_id"
+    t.integer  "current_folder_id"
+    t.integer  "incoming_folder_id"
+    t.integer  "trash_folder_id"
+    t.integer  "archived_folder_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
   end
 
   create_table "folders", :force => true do |t|

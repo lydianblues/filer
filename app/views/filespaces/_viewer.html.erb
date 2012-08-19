@@ -1,5 +1,6 @@
 <%= tag("table", {class: "file-table", id: "file-table-#{filespace}",
-    data: {filespace: filespace, root: folder}}, true)%>
+    data: {filespace: filespace, root: root, current: current,
+      'json-url' => folder_documents_path(current) }}, true)%>
     <thead>
         <tr> 
             <th>Name</th>

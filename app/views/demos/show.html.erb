@@ -1,85 +1,5 @@
 <% title "Demo" %>
 
-<% content_for :head do %>
-
-    <style>
-        #banner {
-      list-style-type: none;
-        }
-        #banner > li {
-      float: left;
-          font-size: 1.5em;
-      line-height: 1.5em;
-      padding-bottom: 1em;
-        }
-    #banner > li:nth-child(2) {
-       float: right;
-           margin-right: 1em;
-        }
-    #explain-tree {
-      padding: 0.5em;
-      margin-bottom: 0.5em;
-       background-color: #ffe;
-    }
-    .spacer {
-      display: inline-block;
-      width: 0.5em;
-        }
-        #content {
-            overflow: hidden;
-            margin: 1em 1em 0.5em 1em;
-            clear: left;
-        }
-    .filespace-panel {
-        overflow: auto;
-    }
-    .tree-wrapper {
-        width: 30%;
-        float: left;
-    }
-    .upload-wrapper {
-        width: 70%;
-        float: left;
-    }
-    .tree-wrapper > .liner {
-        border: 2px solid green;
-        height: 38em;
-        padding: 1em;
-        margin-right: 0.5em;
-        overflow-y: auto;
-     }
-    .upload-wrapper > .liner {
-        padding: 1em;
-        border: 2px solid green;
-        overflow-y: auto;
-        height: 34.95em; 
-    }
-    .upload-wrapper > .trail {
-       height: 1.25em;
-       background-color: #ffe;
-       margin-bottom: 0.5em;
-       border: 2px solid green;
-       padding: 0.25em;
-       font-size: large;
-        }
-    #leader {
-      color: green;
-      margin-right: 1em;
-        }
-        #alog {
-            margin: 0.5em 1em 0em 1em;
-            padding: 0.5em;
-            border: 2px solid green;
-            height: 200px;
-            overflow-y: auto;
-            clear: left;
-        }
-        .clear {
-       clear: left;
-        }
-    </style> 
-<% end %>
-
 <%= stylesheet_link_tag 'tabletools/TableTools' %>
 <%= stylesheet_link_tag 'tabletools/TableTools_JUI' %>
 <%= stylesheet_link_tag 'datatables/jquery.dataTables' %>
@@ -91,79 +11,23 @@
 <%= javascript_include_tag 'jquery.dataTables' %>
 <%= javascript_include_tag 'TableTools' %>
 
-<script>
-    $(function() {
-        $("#filespace-buttonbar").buttonset();
-        $("button", "filespace-buttonbar").button();
-        $(".filespace-action-tabset").tabs();
-        $(".filespace-chooser-tabset").tabs();
+<%= javascript_include_tag 'demo' %>
 
-        $(".filespace-action-tabset").bind('tabsselect', function(event, ui) {
+<%= javascript_include_tag 'jstree-filespaces' %>
 
-            var data =  $(ui.panel).closest(".filespace-panel").data(),
-              filespace = data.filespace,
-              root_folder = data.rootFolder,
-              oTable = $("#file-table-" + filespace).dataTable();
+<!-- The Templates plugin is included to render the
+  upload/download listings. -->
+<%= javascript_include_tag("blueimp/tmpl.min.js") %>
 
-            if (ui.index == 0) {
-                // The URL to use is already set in the DataTables configuration
-                // data.  We are not changing it here.
-                oTable.fnReloadAjax();
-            }
-        });
+<!-- The Load Image plugin is included for the preview images
+ and image resizing functionality. -->
+<%= javascript_include_tag("blueimp/load-image.min.js") %>
 
-        // This code is executed once on page load.  We need to initialize
-        // every DataTable on the page.
-        $(".file-table").each(function(index, element) {
+<!-- The Canvas to Blob plugin is included for image
+  resizing functionality. -->
+<%= javascript_include_tag("blueimp/canvas-to-blob.min.js") %>
 
-            var filespace = $(this).data().filespace; // unused
-            var root_folder = $(this).data().root;
-            
-            $(this).dataTable({
-                "bJQueryUI": true,
-                "bProcessing": true,
-    //          "bServerSide": true,
-                "sAjaxSource": "/folders/" + root_folder + "/documents.json",
-                "bDeferRender": true,
-                "sDom": 'T<"clear">lfrtip',
-                "oTableTools": {
-                "sRowSelect": "multi",
-                "aButtons": [
-                    "select_all",
-                        "select_none",
-                        {
-                            "sExtends":    "text",
-                            "sButtonText": "Cut",
-                            "fnClick": function(nButton, oConfig) {
-                                var selected  = this.fnGetSelected();
-                                // this.fnSelectNone();
-                                alert("Cutting " + selected.length + " rows");
-                            }
-                        },
-                        {
-                            "sExtends":    "text",
-                            "sButtonText": "Copy",
-                            "fnClick": function(nButton, oConfig) {
-                                var selected  = this.fnGetSelected();
-                                // this.fnSelectNone();
-                                alert("Copying " + selected.length + " rows");
-                            }
-                        },
-                        {
-                            "sExtends":    "text",
-                            "sButtonText": "Paste",
-                            "fnClick": function(nButton, oConfig) {
-                                var selected  = this.fnGetSelected();
-                                // this.fnSelectNone();
-                                alert("Pasting " + selected.length + " rows");
-                            }
-                        }
-                    ]
-                }
-            });
-        });
-    });
-</script>
+<%= render partial: 'filespaces/templates' %>
 
 <div id="content">
     <div class="filespace-chooser-tabset">
@@ -172,13 +36,18 @@
             <li><a href="#filespace-<%= @company_filespace.id %>">Company</a></li>
             <li><a href="#filespace-<%= @project_filespace.id %>">Project</a></li>
         </ul>
-        <%= render(partial: 'filespaces/filespace', locals:
-          {id: @user_filespace.id, root: @user_filespace.folder_id}) %>
-        <%= render(partial: 'filespaces/filespace', locals:
-          {id: @company_filespace.id, root: @company_filespace.folder_id}) %>
-        <%= render(partial: 'filespaces/filespace', locals:
-          {id: @project_filespace.id, root: @project_filespace.folder_id}) %>
+        <%= render(partial: 'filespaces/filespace',
+          locals: {id: @user_filespace.id, 
+            current: @user_filespace.current_folder.id,
+            root: @user_filespace.root_folder.id}) %>
+        <%= render(partial: 'filespaces/filespace',
+          locals: {id: @company_filespace.id,
+            current: @company_filespace.current_folder.id,
+            root: @user_filespace.root_folder.id}) %>
+        <%= render(partial: 'filespaces/filespace', 
+          locals: {id: @project_filespace.id,
+            current: @project_filespace.current_folder.id,
+            root: @user_filespace.root_folder.id}) %>
     </div>
-
 </div>
 

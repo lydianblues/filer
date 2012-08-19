@@ -1,3 +1,80 @@
-// Place all the styles related to the demo controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+#banner {
+    list-style-type: none;
+}
+#banner > li {
+    float: left;
+    font-size: 1.5em;
+    line-height: 1.5em;
+    padding-bottom: 1em;
+}
+#banner > li:nth-child(2) {
+    float: right;
+    margin-right: 1em;
+}
+.explanation {
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+    background-color: #ffe;
+}
+.path-list {
+    margin: 0.5em;
+    font-family: monospace;
+    background-color: #ffe;
+    text-align: center;
+}
+.spacer {
+    display: inline-block;
+    width: 0.5em;
+}
+#content {
+    overflow: hidden;
+    margin: 1em 1em 0.5em 1em;
+    clear: left;
+}
+.filespace-panel {
+    overflow: auto;
+}
+.tree-wrapper {
+    width: 30%;
+    float: left;
+}
+.upload-wrapper {
+    width: 70%;
+    float: left;
+}
+.tree-wrapper > .liner {
+    border: 2px solid green;
+    height: 38em;
+    padding: 1em;
+    margin-right: 0.5em;
+    overflow-y: auto;
+}
+.upload-wrapper > .liner {
+    padding: 1em;
+    border: 2px solid green;
+    overflow-y: auto;
+    height: 34.95em; 
+}
+.upload-wrapper > .trail {
+   height: 1.25em;
+   background-color: #ffe;
+   margin-bottom: 0.5em;
+   border: 2px solid green;
+   padding: 0.25em;
+   font-size: large;
+}
+#leader {
+    color: green;
+    margin-right: 1em;
+}
+#alog {
+    margin: 0.5em 1em 0em 1em;
+    padding: 0.5em;
+    border: 2px solid green;
+    height: 200px;
+    overflow-y: auto;
+    clear: left;
+}
+.clear {
+    clear: left;
+}
