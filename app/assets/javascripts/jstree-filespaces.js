@@ -121,6 +121,7 @@ $(function () {
             $.ajax(url, settings);
         })
         .bind("dblclick.jstree click.jstree", function(e, data) {
+            console.log("jstree handling (dbl-)click event");
             // 'this' is the root div of a JsTree.
             // debugger;
             var inst_id = $(this).data().jstree_instance_id,
@@ -259,6 +260,30 @@ $(function () {
             alert("Copy node");
         });
     });
-});    
+});
+
+// Set up each filespace so that when first viewed (by clicking
+// its tab, perhaps), it looks as if the user had clicked the 
+// "Current" node in the JsTree.  This causes the trail, the file
+// viewer URL, and the upload URL to all be initialized for the
+// "Current" folder.  Note that we have to wait for the JsTree to
+// be initialized by fetching the JSON from the server and populating
+// the tree.  Note that "div.filespace-tree" is statically loaded,
+// so it is always present.  A more sophisticated approach would be
+// to call ourself recursively (with a short timeout) if the li_node
+// is missing.
+$(function() {
+    setTimeout(function() {
+        $(".filespace-tree").each(function() {
+            var current_folder = $(this).data().currentFolder,
+            li_node = $("#node-" + current_folder);
+            if (li_node.data().ntype === "current") {
+                $("a", li_node).trigger("click.jstree");
+            };
+        });
+    }, 1000);
+});
+
+            
 
 

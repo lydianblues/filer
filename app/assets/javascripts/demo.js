@@ -1,3 +1,19 @@
+// Load order for javascript:
+
+// jquery
+// jquery_ujs
+// application
+// jquery-ui-<version>.custom (first JS loaded by demo/show)
+// jstree
+// dataTables
+// TableTools
+// demo
+// jstree-filespaces
+// templ
+// load-image
+// canvas-to-blob
+// fileupload (3 times)
+
 // Part of the solution to the FOUC problem.
 $('html').hide();
 
@@ -11,7 +27,7 @@ $(function() {
          select: function(event, ui) {
              var current_folder = $(ui.panel).data().currentFolder,    
                 anchor_node  = $("a", $("#node-" + current_folder));
-             anchor_node.trigger("click.jstree");
+             // anchor_node.trigger("click.jstree");
          }
     });
 

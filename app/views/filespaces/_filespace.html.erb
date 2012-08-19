@@ -5,12 +5,13 @@
       <div class="tree-wrapper">
           <div class="liner">
               <div class="explanation">
-                  Double-click on a folder to select it.  Then click
+                  Click on a folder to select it.  Then click
                   <em>View Files</em> to view the files in the folder, or
                   click <em>Upload Files</em> to upload files to the folder.
               </div>
               <%= tag("div", {id: "node-#{root}", "class" => "filespace-tree",
-                "data" => {"filespace" => id, "root-folder" => root}}, true) %>
+                "data" => {"filespace" => id, "root-folder" => root,
+                "current-folder" => current}}, true) %>
               </div>
           </div>
       </div>
