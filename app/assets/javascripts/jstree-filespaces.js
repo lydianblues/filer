@@ -120,7 +120,7 @@ $(function () {
               }; // end of list of vars
             $.ajax(url, settings);
         })
-        .bind("dblclick.jstree", function(e, data) {
+        .bind("dblclick.jstree click.jstree", function(e, data) {
             // 'this' is the root div of a JsTree.
             // debugger;
             var inst_id = $(this).data().jstree_instance_id,

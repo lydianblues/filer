@@ -11,7 +11,7 @@ $(function() {
          select: function(event, ui) {
              var current_folder = $(ui.panel).data().currentFolder,    
                 anchor_node  = $("a", $("#node-" + current_folder));
-             anchor_node.trigger("dblclick.jstree");
+             anchor_node.trigger("click.jstree");
          }
     });
 
