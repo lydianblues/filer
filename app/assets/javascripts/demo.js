@@ -1,22 +1,3 @@
-// Load order for javascript:
-
-// jquery
-// jquery_ujs
-// application
-// jquery-ui-<version>.custom (first JS loaded by demo/show)
-// jstree
-// dataTables
-// TableTools
-// demo
-// jstree-filespaces
-// templ
-// load-image
-// canvas-to-blob
-// fileupload (3 times)
-
-// Part of the solution to the FOUC problem.
-$('html').hide();
-
 $(function() {
     $("#filespace-buttonbar").buttonset();
     $("button", "filespace-buttonbar").button();
@@ -97,5 +78,4 @@ $(function() {
             }
         });
     });
-     $('html').show(); // the other half of the FOUC solution
 });
