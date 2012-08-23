@@ -83,20 +83,23 @@
             :class => "fileupload-control"}) do |f| %>
               
             <div class="row fileupload-buttonbar">
-                <span class="btn fileinput-button">
+                
+                <!-- The following button and span must remain as
+                      consecutive siblings. -->
+                <button type="button" id=<%= "input-#{current}" %>
+                    class="file-chooser">
                     <span>Add files...</span>
+                </button>
+                <span style="display:none;" class="btn fileinput-button">
                     <%= f.file_field :content %>
                 </span>
+                
                 <button type="submit" class="btn start">
                     <span>Start upload</span>
                 </button>
                 <button type="reset" class="btn cancel">
                     <span>Cancel upload</span>
                 </button>
-                <button type="button" class="btn delete">
-                    <span>Delete</span>
-                </button>
-                <input type="checkbox" class="toggle">
             </div>
         
             <div class="fileupload-progress">

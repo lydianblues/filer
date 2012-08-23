@@ -17,6 +17,12 @@
             <li><a href="#filespace-<%= @user_filespace.id %>">User</a></li>
             <li><a href="#filespace-<%= @company_filespace.id %>">Company</a></li>
             <li><a href="#filespace-<%= @project_filespace.id %>">Project</a></li>
+            <li><a href="#filespace-<%= @outgoingrequest_filespace.id %>">
+                Outgoing Request
+            </a></li>
+            <li><a href="#filespace-<%= @incomingquote_filespace.id %>">
+                Incoming Quote
+            </a></li>
         </ul>
         <%= render(partial: 'filespaces/filespace',
           locals: {id: @user_filespace.id, 
@@ -30,6 +36,14 @@
           locals: {id: @project_filespace.id,
             current: @project_filespace.current_folder.id,
             root: @user_filespace.root_folder.id}) %>
+        <%= render(partial: 'filespaces/filespace', 
+          locals: {id: @outgoingrequest_filespace.id,
+            current: @outgoingrequest_filespace.current_folder.id,
+            root: @outgoingrequest_filespace.root_folder.id}) %>
+        <%= render(partial: 'filespaces/filespace', 
+          locals: {id: @incomingquote_filespace.id,
+            current: @incomingquote_filespace.current_folder.id,
+            root: @incomingquote_filespace.root_folder.id}) %>
     </div>
 </div>
 
@@ -37,8 +51,8 @@
 <%= javascript_include_tag 'jstree' %>
 <%= javascript_include_tag 'jquery.dataTables' %>
 <%= javascript_include_tag 'TableTools' %>
-<%= javascript_include_tag 'demo' %>
-<%= javascript_include_tag 'jstree-filespaces' %>
+
+<%= javascript_include_tag 'filespaces' %>
 
 <!-- The Templates plugin is included to render the
   upload/download listings. -->
