@@ -14,6 +14,13 @@ class DocumentsController < ApplicationController
   def destroy
     folder_id = params[:folder_id]
     document_id = params[:id]
+    document = Document.find(document_id)
+    url = document.content.url
+    
+    # Destroy by hand so we can maintain the link count via
+    # transaction.  We should change this to an after_destroy
+    # callback.
+    
     count = Link.where(document_id: document_id).size
     link = Link.where(document_id: document_id, folder_id: folder_id).first
     ActiveRecord::Base.transaction do
@@ -23,7 +30,10 @@ class DocumentsController < ApplicationController
         document.destroy
       end
     end
-    render :json => true
+    
+    logger.info("Deleting file at URL: #{url}")
+    File.delete("#{Rails.root}/public#{url}")
+    render :json => nil, :status => :ok
   end
 
 end

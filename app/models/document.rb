@@ -10,6 +10,7 @@ class Document < ActiveRecord::Base
     # This defines the column order in the rows presented 
     # by DataTables.
     ColumnMap = [
+      "id",
       "name",
       "created_at", # really, uploaded_at
       "size",
@@ -105,6 +106,7 @@ class Document < ActiveRecord::Base
       data = []
       results.each do |r|
         data << [
+          r.id,
           "<a href=\"#{r.content.url}\">#{r.name}</a>",
           r.created_at.localtime.strftime("%m/%d/%Y %I:%M%p"),
           r.content.size,

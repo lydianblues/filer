@@ -347,6 +347,14 @@ $(function() {
             "sDom": 'T<"clear">lfrtip',
             "oTableTools": {
             "sRowSelect": "multi",
+            "aoColumns": [ 
+                /* Id */ {"bVisible": false},
+            	/* Name */ null,
+            	/* Uploaded At */  {"bSearchable": false},
+    			/* Size */ { "bSearchable": false,
+    			    "bVisible":    false },
+    			/* Checksum */ { "bVisible":    false }
+    		],
             "aButtons": [
                 "select_all",
                     "select_none",
@@ -354,9 +362,46 @@ $(function() {
                         "sExtends":    "text",
                         "sButtonText": "Cut",
                         "fnClick": function(nButton, oConfig) {
-                            var selected  = this.fnGetSelected();
+                            var selected  = this.fnGetSelected(), ft, oTable;
+                            if (selected.length > 0) {
+                                var ft = $(selected[0]).closest(".file-table"),
+                                    oTable = ft.DataTable(),
+                                    folder_id = ft.data("current");
+                                $(selected).each(function(index, element) {
+                                     var url, id, settings;
+                                     
+                                     // Make an XHR request to Rails server to
+                                     // delete the file.  URL is DELETE HTTP
+                                     // verb for the path:
+                                     // /folders/:folder_id/documents/:id
+                                     id = $($("td", this)[0]).text();
+                                     
+                                     // Rails URL.
+                                     url = "/folders/" + folder_id +
+                                        "/documents/" + id;
+                                    
+                                     settings = {
+                                         dataType: 'json',
+                                         success: function() {
+                                             oTable.fnDeleteRow(element);
+                                         },
+                                         error: function() {
+                                             alert("cut row failure");
+                                         },
+                                         type: 'POST',
+                                         accepts: 'json',
+                                         data: {
+                                             _method: 'delete'
+                                         }
+                                     }; 
+                                    $.ajax(url, settings);
+                                    
+                               });
+                            }
                             // this.fnSelectNone();
-                            alert("Cutting " + selected.length + " rows");
+                            // fnDeleteRow()
+                            // debugger;
+                            // alert("Cutting " + selected.length + " rows");
                         }
                     },
                     {
