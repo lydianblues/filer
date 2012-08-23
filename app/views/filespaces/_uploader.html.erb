@@ -1,27 +1,3 @@
-<% content_for :head do %>
-
-<!-- Bootstrap CSS Toolkit styles -->
-<%= stylesheet_link_tag("blueimp/bootstrap.min.css") %>
-
-<!-- Bootstrap styles for responsive website layout,
-  supporting different screen sizes -->
-<%= stylesheet_link_tag("blueimp/bootstrap-responsive.min.css") %> 
-
-<!-- Bootstrap CSS fixes for IE6 -->
-<!--[if lt IE 7]><link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-ie6.min.
-css"><![endif]-->
-
-<!-- Bootstrap Image Gallery styles -->
-<%= stylesheet_link_tag("blueimp/bootstrap-image-gallery.min.css") %>
-
-<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
-<%= stylesheet_link_tag "jquery.fileupload-ui" %>
-
-<!-- Shim to make HTML5 elements usable in older Internet Explorer versions -->
-<!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-
-<% end %>
-
 <!--
   The file uploader Javascript package directly refers to these templates.
   The templating system is jquery-templ, which is "no longer in active
@@ -66,10 +42,17 @@ css"><![endif]-->
         <td class="name"><span>{%=file.name%}</span></td>
         <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
         {% if (file.error) { %}
-            <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+            <td class="error" colspan="2">
+                <span class="label label-important">
+                    {%=locale.fileupload.error%}
+                </span>
+                {%=locale.fileupload.errors[file.error] || file.error%}
+            </td>
         {% } else if (o.files.valid && !i) { %}
             <td>
-                <div class="progress progress-success progress-striped active"><div class="bar" style="width:0%;"></div></div>
+                <div class="progress progress-success progress-striped active">
+                    <div class="bar"></div>
+                </div>
             </td>
             <td class="start">{% if (!o.options.autoUpload) { %}
                 <button class="btn btn-primary">
@@ -100,34 +83,26 @@ css"><![endif]-->
             :class => "fileupload-control"}) do |f| %>
               
             <div class="row fileupload-buttonbar">
-                <div class="span7">
-                    <span class="btn btn-success fileinput-button">
-                        <i class="icon-plus icon-white"></i>
-                        <span>Add files...</span>
-                        <%= f.file_field :content %>
-                    </span>
-                    <button type="submit" class="btn btn-primary start">
-                        <i class="icon-upload icon-white"></i>
-                        <span>Start upload</span>
-                    </button>
-                    <button type="reset" class="btn btn-warning cancel">
-                        <i class="icon-ban-circle icon-white"></i>
-                        <span>Cancel upload</span>
-                    </button>
-                    <button type="button" class="btn btn-danger delete">
-                        <i class="icon-trash icon-white"></i>
-                        <span>Delete</span>
-                    </button>
-                    <input type="checkbox" class="toggle">
-                </div>
-                <div class="span5">
-                    <!-- The global progress bar -->
-                    <div class="progress progress-success progress-striped active fade">
-                        <div class="bar" style="width:0%;"></div>
-                    </div>
-                </div>
+                <span class="btn fileinput-button">
+                    <span>Add files...</span>
+                    <%= f.file_field :content %>
+                </span>
+                <button type="submit" class="btn start">
+                    <span>Start upload</span>
+                </button>
+                <button type="reset" class="btn cancel">
+                    <span>Cancel upload</span>
+                </button>
+                <button type="button" class="btn delete">
+                    <span>Delete</span>
+                </button>
+                <input type="checkbox" class="toggle">
             </div>
         
+            <div class="fileupload-progress">
+                <div class="progress"></div>
+            </div>
+            
             <!-- The loading indicator is shown during image processing -->
             <div class="fileupload-loading"></div>
             <br>
@@ -151,15 +126,6 @@ css"><![endif]-->
     uploadedBytes: 'Uploaded bytes exceed file size',
     emptyResult: 'Empty file upload result'
   };
-</script>
-
-<script>
-    $(function () {
-        // Initialize the jQuery File Upload widget:
-        $(".fileupload-control").each(function(index, element) {
-            $(this).fileupload();
-        });
-    });
 </script>
 
 

@@ -274,13 +274,22 @@ $(function () {
 // is missing.
 $(function() {
     setTimeout(function() {
-        $(".filespace-tree").each(function() {
+        $(".filespace-tree").each(function(index, element) {
             var current_folder = $(this).data().currentFolder,
             li_node = $("#node-" + current_folder);
             if (li_node.data().ntype === "current") {
                 $("a", li_node).trigger("click.jstree");
             };
         });
+        
+        $(".fileupload-control").each(function(index, element) {
+            $(this).fileupload({
+                done: function(e, data) {
+                    // Don't do anything for downloads.
+                }
+            });
+        });
+        
     }, 1000);
 });
 
