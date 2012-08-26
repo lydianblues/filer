@@ -6,12 +6,15 @@ module CarrierWave
   module Uploader
     module Store
       def store_path(for_file=filename)
+        for_file =~ /^.*(\..+)/
+        ext = $1
         cs = model.checksum
         @path ||= begin
           File.join([store_dir, cs[0..1], cs[2..3],
-            cs[4..5], cs[6..-1]])
+            cs[4..5], cs[6..-1] + ext])
         end
-        Rails.logger.info("store_path returning #{@path}")
+        Rails.logger.info("store_path: for_file = #{for_file} ")
+        Rails.logger.info("store_path: returning #{@path}")
         @path
       end
     end
