@@ -32,8 +32,8 @@ class DocumentsController < ApplicationController
     end
     
     logger.info("Deleting file at URL: #{url}")
-    File.delete("#{Rails.root}/public#{url}")
-    render :json => nil, :status => :ok
+    # File.delete("#{Rails.root}/public#{url}")
+    render :nothing => true, :status => :ok
   end
 
 end

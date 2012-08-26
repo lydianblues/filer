@@ -5,7 +5,9 @@ class CreateDocuments < ActiveRecord::Migration
       t.string :name
       t.integer :size
       t.string :url
-      t.integer :checksum
+      t.string :checksum
+      t.string :path
+      t.string :content_type
       t.timestamps
     end
   end

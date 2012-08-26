@@ -37,22 +37,12 @@ $(function() {
     
     $(".fileupload-buttonbar").buttonset();
     $(".fileupload-buttonbar button").button();
-    
     $("#filespace-buttonbar").buttonset();
     $("button", "filespace-buttonbar").button();
     $(".filespace-action-tabset").tabs();
-    $(".filespace-chooser-tabset").tabs({
-        // Set things up so that a tab select event will also act like
-        // a double-click on the "current" folder of the JsTree.
-         select: function(event, ui) {
-             var current_folder = $(ui.panel).data().currentFolder,    
-                anchor_node  = $("a", $("#node-" + current_folder));
-             // anchor_node.trigger("click.jstree");
-         }
-    });
+    $(".filespace-chooser-tabset").tabs();
 
     $(".filespace-action-tabset").bind('tabsselect', function(event, ui) {
-
         var data =  $(ui.panel).closest(".filespace-panel").data(),
           filespace = data.filespace,
           root_folder = data.rootFolder,

@@ -18,9 +18,11 @@ ActiveRecord::Schema.define(:version => 20120803183656) do
     t.string   "name"
     t.integer  "size"
     t.string   "url"
-    t.integer  "checksum"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string   "checksum"
+    t.string   "path"
+    t.string   "content_type"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "filespaces", :force => true do |t|

@@ -13,7 +13,17 @@ class UploadsController < ApplicationController
     link = @document.links.build
     folder_id = params[:folder_id]
     link.folder_id = folder_id
-    @document.name =  params[:document][:content].original_filename
+    
+    uploaded_file = params[:document][:content]
+    sha1_digest = Digest::SHA1.hexdigest(uploaded_file.read)
+    uploaded_file.rewind
+  
+    @document.checksum = sha1_digest
+    @document.name =  uploaded_file.original_filename
+    @document.content_type = uploaded_file.content_type
+    @document.size = uploaded_file.size
+    
+    
     if @document.save
       render :json => [@document.to_jq_upload(folder_id)].to_json			
     else

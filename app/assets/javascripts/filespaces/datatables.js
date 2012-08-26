@@ -21,8 +21,8 @@ $(function() {
                 /* Id */ {"bVisible": false},
                 /* Name */ null,
                 /* Uploaded At */  {"bSearchable": false},
-                /* Size */ { "bSearchable": false,
-                    "bVisible":    false },
+                /* Size */ {"bSearchable": false, "bVisible": false},
+                /* Content Type */ null,
                 /* Checksum */ { "bVisible":    false }
             ],
             "aButtons": [

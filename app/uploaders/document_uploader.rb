@@ -1,5 +1,23 @@
 # encoding: utf-8
 
+require 'digest'
+
+module CarrierWave
+  module Uploader
+    module Store
+      def store_path(for_file=filename)
+        cs = model.checksum
+        @path ||= begin
+          File.join([store_dir, cs[0..1], cs[2..3],
+            cs[4..5], cs[6..-1]])
+        end
+        Rails.logger.info("store_path returning #{@path}")
+        @path
+      end
+    end
+  end
+end
+
 class DocumentUploader < CarrierWave::Uploader::Base
 
   # Include RMagick or MiniMagick support:
@@ -17,7 +35,8 @@ class DocumentUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    # "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    "uploads"
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:

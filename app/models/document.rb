@@ -4,7 +4,7 @@ class Document < ActiveRecord::Base
 
   attr_accessible :content, :name, :remote_document_url
   mount_uploader :content, DocumentUploader
-  
+    
   module DataTables
 
     # This defines the column order in the rows presented 
@@ -14,6 +14,7 @@ class Document < ActiveRecord::Base
       "name",
       "created_at", # really, uploaded_at
       "size",
+      "content_type",
       "checksum"
     ]
 
@@ -110,6 +111,7 @@ class Document < ActiveRecord::Base
           "<a href=\"#{r.content.url}\">#{r.name}</a>",
           r.created_at.localtime.strftime("%m/%d/%Y %I:%M%p"),
           r.content.size,
+          r.content_type,
           r.checksum || 0
          ]
       end
