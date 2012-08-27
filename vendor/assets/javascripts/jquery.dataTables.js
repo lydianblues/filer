@@ -2951,6 +2951,7 @@
 		 */
 		function _fnFeatureHtmlProcessing ( oSettings )
 		{
+debugger;
 			var nProcessing = document.createElement( 'div' );
 			
 			if ( !oSettings.aanFeatures.r )

@@ -16,17 +16,17 @@ $(function() {
             "bDeferRender": true,
             "sDom": 'T<"clear">lfrtip',
             "oTableTools": {
-            "sRowSelect": "multi",
-            "aoColumns": [ 
-                /* Id */ {"bVisible": false},
-                /* Name */ null,
-                /* Uploaded At */  {"bSearchable": false},
-                /* Size */ {"bSearchable": false, "bVisible": false},
-                /* Content Type */ null,
-                /* Checksum */ { "bVisible":    false }
-            ],
-            "aButtons": [
-                "select_all",
+                "sRowSelect": "multi",
+                "aoColumns": [ 
+                    /* Id */ {"bVisible": false},
+                    /* Name */ null,
+                    /* Uploaded At */  {"bSearchable": false},
+                    /* Size */ {"bSearchable": false, "bVisible": false},
+                    /* Content Type */ null,
+                    /* Checksum */ { "bVisible":    false }
+                ],
+                "aButtons": [
+                    "select_all",
                     "select_none",
                     {
                         "sExtends":    "text",
@@ -59,7 +59,7 @@ $(function() {
                                              alert("cut row failure");
                                          },
                                          type: 'POST',
-                                         accepts: 'json',
+                                         accepts: {json: 'application/json'},
                                          data: {
                                              _method: 'delete'
                                          }
@@ -72,6 +72,16 @@ $(function() {
                             // fnDeleteRow()
                             // debugger;
                             // alert("Cutting " + selected.length + " rows");
+                        }
+                    },
+                    {
+                        "sExtends":    "text",
+                        "sButtonText": "Process",
+                        "fnClick": function(nButton, oConfig) {
+                            var oTable = this.s.dt.oInstance
+                            
+                            oTable.fnProcessingIndicator();
+                            
                         }
                     },
                     {

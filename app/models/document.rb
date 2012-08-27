@@ -101,7 +101,7 @@ class Document < ActiveRecord::Base
       records = {
         "sEcho" => echo.to_i,
         "iTotalRecords" => total.to_i,
-        "iTotalDisplayRecords" => results.size + 2, # XXX
+        "iTotalDisplayRecords" => results.size + 1000000, # XXX
         "aaData" => []
       }
       data = []
@@ -110,7 +110,7 @@ class Document < ActiveRecord::Base
           r.id,
           "<a href=\"#{r.content.url}\">#{r.name}</a>",
           r.created_at.localtime.strftime("%m/%d/%Y %I:%M%p"),
-          r.content.size,
+          r.size,
           r.content_type,
           r.checksum || 0
          ]

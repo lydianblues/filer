@@ -23,7 +23,6 @@ class UploadsController < ApplicationController
     @document.content_type = uploaded_file.content_type
     @document.size = uploaded_file.size
     
-    
     if @document.save
       render :json => [@document.to_jq_upload(folder_id)].to_json			
     else

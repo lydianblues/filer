@@ -1,19 +1,17 @@
 # encoding: utf-8
 
 require 'digest'
+require 'carrierwave/processing/mime_types'
 
 module CarrierWave
   module Uploader
     module Store
       def store_path(for_file=filename)
-        for_file =~ /^.*(\..+)/
-        ext = $1
         cs = model.checksum
         @path ||= begin
           File.join([store_dir, cs[0..1], cs[2..3],
-            cs[4..5], cs[6..-1] + ext])
+            cs[4..5], cs[6..-1], for_file])
         end
-        Rails.logger.info("store_path: for_file = #{for_file} ")
         Rails.logger.info("store_path: returning #{@path}")
         @path
       end
@@ -22,6 +20,10 @@ module CarrierWave
 end
 
 class DocumentUploader < CarrierWave::Uploader::Base
+  
+  include CarrierWave::MimeTypes
+
+  process :set_content_type
 
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
@@ -32,8 +34,8 @@ class DocumentUploader < CarrierWave::Uploader::Base
   # include Sprockets::Helpers::IsolatedHelper
 
   # Choose what kind of storage to use for this uploader:
-  storage :file
-  # storage :fog
+  # storage :file
+  storage :fog
 
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:

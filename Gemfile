@@ -7,6 +7,8 @@ gem 'rails', '3.2.6'
 
 gem 'sqlite3'
 gem 'pg'
+gem 'configatron'
+gem 'fog'
 
 
 # Gems used only for assets and not required
@@ -21,7 +23,7 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'jquery-rails'
+gem 'jquery-rails', '2.0.2'
 gem 'jstree-rails', :path => '/opt/gems/jstree-rails'
 gem 'fileupload-rails', :path => '/opt/gems/fileupload-rails'
 gem 'carrierwave'
