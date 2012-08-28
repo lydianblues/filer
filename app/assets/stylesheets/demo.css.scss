@@ -35,11 +35,11 @@
     overflow: auto;
 }
 .tree-wrapper {
-    width: 30%;
+    width: 25%;
     float: left;
 }
 .upload-wrapper {
-    width: 70%;
+    width: 75%;
     float: left;
 }
 .tree-wrapper > .liner {
@@ -53,7 +53,7 @@
     padding: 1em;
     border: 2px solid green;
     overflow-y: auto;
-    height: 34.95em; 
+    height: 35.45em; 
 }
 .upload-wrapper > .trail {
    height: 1.25em;
@@ -77,4 +77,19 @@
 }
 .clear {
     clear: left;
+}
+.file-table {
+    table-layout: fixed;
+    width: 100%;
+    font-size: 14px;
+    th {
+        &:nth-child(1) {width: 5%;}
+        &:nth-child(2) {width: 40%;}
+        &:nth-child(3) {width: 20%;}
+        &:nth-child(4) {width: 15%;}
+        &:nth-child(5) {width: 20%;}
+    };
+    td {
+        word-wrap: break-word;
+    }
 }

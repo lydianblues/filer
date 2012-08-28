@@ -13,18 +13,23 @@ $(function() {
             "bProcessing": true,
 //          "bServerSide": true,
             "sAjaxSource": json_url,
+            "bAutoWidth": false,
             "bDeferRender": true,
-            "sDom": 'T<"clear">lfrtip',
+            "sDom": '<"H"T<"clear">lfr>t<"F"ip>',
+            "sPaginationType": "full_numbers",
+            "aoColumns": [ 
+                /* Id */ {"bVisible": true, "bSearchable": false},
+                /* Name */ null,
+                /* Uploaded At */  {"bSearchable": false},
+                /* Size */ {"bSearchable": false, "bVisible": true},
+                /* Content Type */ {"bSearchable": true},
+                /* Checksum */ {"bSearchable": false, "bVisible": false}
+            ],
+            "fnDrawCallback": function(oSettings) {
+                // $(".dataTable").width("80%");
+            },
             "oTableTools": {
                 "sRowSelect": "multi",
-                "aoColumns": [ 
-                    /* Id */ {"bVisible": false},
-                    /* Name */ null,
-                    /* Uploaded At */  {"bSearchable": false},
-                    /* Size */ {"bSearchable": false, "bVisible": false},
-                    /* Content Type */ null,
-                    /* Checksum */ { "bVisible":    false }
-                ],
                 "aButtons": [
                     "select_all",
                     "select_none",

@@ -1,11 +1,10 @@
 <% title "Demo" %>
 
-<%= stylesheet_link_tag 'tabletools/TableTools' %>
-<%= stylesheet_link_tag 'tabletools/TableTools_JUI' %>
-<!-- <%= stylesheet_link_tag 'datatables/jquery.dataTables' %> -->
-<%= stylesheet_link_tag 'datatables/jquery.dataTables_themeroller' %>
-<%= stylesheet_link_tag 'ui-lightness/jquery-ui-1.8.21.custom' %>
-<%= stylesheet_link_tag "jquery.fileupload-ui" %> 
+<%= stylesheet_link_tag "jquery.fileupload-ui" %>
+<%= stylesheet_link_tag 'redmond/jquery-ui-1.8.23.custom' %>
+<%= stylesheet_link_tag 'jquery.dataTables_themeroller' %>
+<%= stylesheet_link_tag 'TableTools' %>
+<%= stylesheet_link_tag 'TableTools_JUI' %> 
 
 <script>
     $("body").hide();  // Prevent FOUC
@@ -47,10 +46,10 @@
     </div>
 </div>
 
-<%= javascript_include_tag 'jquery-ui-1.8.21.custom' %>
+<%= javascript_include_tag 'jquery-ui-1.8.23.custom' %>
 <%= javascript_include_tag 'jstree' %>
-<%= javascript_include_tag 'jquery.dataTables' %>
-<%= javascript_include_tag 'TableTools' %>
+<%= javascript_include_tag 'datatables' %>
+<%= javascript_include_tag 'tabletools' %>
 
 <%= javascript_include_tag 'filespaces/helpers' %>
 <%= javascript_include_tag 'filespaces/jstree' %>

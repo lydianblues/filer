@@ -9,7 +9,7 @@ gem 'sqlite3'
 gem 'pg'
 gem 'configatron'
 gem 'fog'
-
+gem 'thin'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -26,7 +26,11 @@ end
 gem 'jquery-rails', '2.0.2'
 gem 'jstree-rails', :path => '/opt/gems/jstree-rails'
 gem 'fileupload-rails', :path => '/opt/gems/fileupload-rails'
+gem 'datatables-rails', :path => '/opt/gems/datatables-rails'
+gem 'tabletools-rails', :path => '/opt/gems/tabletools-rails'
+
 gem 'carrierwave'
+
 gem 'mini_magick'
 
 # To use ActiveModel has_secure_password
@@ -42,4 +46,4 @@ gem 'mini_magick'
 # gem 'capistrano'
 
 # To use debugger
-# gem 'debugger'
+gem 'debugger'

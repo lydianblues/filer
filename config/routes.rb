@@ -8,6 +8,8 @@ Research::Application.routes.draw do
     resources :uploads
   end
   
+  resources :tables
+
   root :to => 'filespaces#index'
 
   # The priority is based upon order of creation:
