@@ -81,13 +81,13 @@
 .file-table {
     table-layout: fixed;
     width: 100%;
-    font-size: 14px;
+    font-size: 12px;
     th {
-        &:nth-child(1) {width: 5%;}
+        &:nth-child(1) {width: 8%;}
         &:nth-child(2) {width: 40%;}
         &:nth-child(3) {width: 20%;}
-        &:nth-child(4) {width: 15%;}
-        &:nth-child(5) {width: 20%;}
+        &:nth-child(4) {width: 17%;}
+        &:nth-child(5) {width: 15%;}
     };
     td {
         word-wrap: break-word;

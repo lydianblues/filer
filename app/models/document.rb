@@ -23,18 +23,9 @@ class Document < ActiveRecord::Base
       links = Arel::Table.new(:links)
       folder_id = sanitize_sql(params[:folder_id])
 
-      query = documents.project(Arel.sql('*'))
+      query = documents
         .join(links).on(links[:document_id].eq(documents[:id]))
         .where(links[:folder_id].eq(folder_id))
-
-      # Paging
-      if params["iDisplayStart"] 
-        iDisplayStart =  params["iDisplayStart"].to_i
-        iDisplayLength = params["iDisplayLength"].to_i
-        if iDisplayLength != -1
-          query = query.take(iDisplayLength).skip(iDisplayStart)
-        end
-      end
 
       # Ordering
       if params["iSortCol_0"]
@@ -85,23 +76,37 @@ class Document < ActiveRecord::Base
           end
         end
       end
-
+      
       if search
         query = query.where(search)
       end
+      
+      count_query = query.clone.project('count(*)')
+      total_matches = Document.count_by_sql(count_query)
+      
+      # Paging
+      if params["iDisplayStart"] 
+        iDisplayStart =  params["iDisplayStart"].to_i
+        iDisplayLength = params["iDisplayLength"].to_i
+        if iDisplayLength != -1
+          query = query.take(iDisplayLength).skip(iDisplayStart)
+        end
+      end
 
       total_records = Document.entries_for_folder(params["folder_id"]).size
-      results = Document.find_by_sql(query)
-      format_results(results, total_records, params["sEcho"])
+      results = Document.find_by_sql(query.project(Arel.sql('*')))
+      format_results(results, total_records, total_matches, params["sEcho"])
     end
 
     private
 
-    def format_results(results, total, echo)
+    def format_results(results, total_records, total_matches, echo)
+      Rails.logger.info "total_records = #{total_records}, " +
+          "total_matches = #{total_matches}"
       records = {
         "sEcho" => echo.to_i,
-        "iTotalRecords" => total.to_i,
-        "iTotalDisplayRecords" => results.size + 1000000, # XXX
+        "iTotalRecords" => total_records.to_i,
+        "iTotalDisplayRecords" => total_matches.to_i,
         "aaData" => []
       }
       data = []
