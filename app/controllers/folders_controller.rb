@@ -127,14 +127,28 @@ class FoldersController < ApplicationController
       params[:mover][:old_parent]
       filespace_id =  params[:mover][:new_filespace]
       parent_id = params[:mover][:new_parent]
-
+      parent_folder = Folder.find(parent_id)
+      
       # Gaping security hole.  Anyone can move any folder to anywhere.
-      if @folder.update_attributes(filespace_id: filespace_id,
-        parent_id: parent_id)
-        render json: nil,  status: :ok
+      # On the client side, the client should save the tree before it
+      # changes the tree in memory, then restore the tree if the server
+      # returns an error.  This is not fatal, however, since the server
+      # has the correct tree structure all the client has to do is refresh
+      # the page to see the correct tree.
+      begin
+        ActiveRecord::Base.transaction do
+          parent_folder.update_attributes!(leaf: false)
+          @folder.update_attributes!(filespace_id: filespace_id,
+            parent_id: parent_id)
+          raise "z"
+        end
+      rescue Exception => e
+        logger.warn "FoldersController#update: Move node failed: #{e.message}"
+        status = :unprocessable_entity
       else
-        render json: nil, status: :unprocessable_entity
+        status = :ok
       end
+       render json: nil, status: status
     end
   end
   

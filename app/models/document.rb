@@ -25,44 +25,33 @@ class Document < ActiveRecord::Base
 
       query = documents
         .join(links).on(links[:document_id].eq(documents[:id]))
+        .group(documents[:id]).group(links[:id])
         .where(links[:folder_id].eq(folder_id))
-
-      # Ordering
-      if params["iSortCol_0"]
-        iSortCol_0 = params["iSortCol_0"]
-        iSortingCols = params["iSortingCols"].to_i
-
-        for n in 0..(iSortingCols - 1)
-          sort_col_idx = params["iSortCol_#{n}"].to_i
-          if params["bSortable_#{sort_col_idx}"] == "true"
-            dir = params["sSortDir_#{sort_col_idx}"]
-            dir = "asc" if dir.blank?
-          end
-          col = ColumnMap[sort_col_idx]
-          query = query.order("#{col} #{dir}")
-        end
-      end
 
       # Search across all columns.
       sSearch = params["sSearch"]
     
-      # This is overly general.  In the filer application we will only
-      # search the "name" column.
+      # Search all searchable columns with one search string.
       search = nil
       unless sSearch.blank?
+        pattern = '%' + sanitize_sql(sSearch) + '%'
         for n in 0..(ColumnMap.length - 1)
-          col = ColumnMap[n]
-          pattern = '%' + sanitize_sql(sSearch) + '%'
-          t = documents[col].matches(pattern)
-          if search
-            search = search.or(t)
-          else
-            search = t
+          if params["bSearchable_#{n}"] == 'true'
+            col = ColumnMap[n]
+            t = documents[col].matches(pattern)
+            if search
+                search.or(t)
+            else
+              search = t
+            end
           end
         end
       end
+      query.where(search) if search
     
-      # Individual column search.
+      # Search all searchable columns with a different search 
+      # string for each columnn.
+      search = nil
       for n in 0..(ColumnMap.length - 1)
         col = ColumnMap[n]
         if params["bSearchable_#{n}"] == 'true' &&
@@ -70,19 +59,32 @@ class Document < ActiveRecord::Base
           pattern = '%' + sanitize_sql(params["sSearch_#{n}"]) + '%'
           t = documents[col].matches(pattern)
           if search
-            search = search.or(t)
+            search.or(t)
           else
             search = t
           end
         end
       end
-      
-      if search
-        query = query.where(search)
-      end
+      query.where(search) if search
       
       count_query = query.clone.project('count(*)')
-      total_matches = Document.count_by_sql(count_query)
+      total_matches = Document.find_by_sql(count_query).length
+      
+      if params["iSortCol_0"]
+         iSortCol_0 = params["iSortCol_0"]
+         iSortingCols = params["iSortingCols"].to_i
+         for n in 0..(iSortingCols - 1)
+           sort_col_idx = params["iSortCol_#{n}"].to_i
+           if params["bSortable_#{sort_col_idx}"] == "true"
+             dir = params["sSortDir_#{sort_col_idx}"]
+             dir = "asc" if dir.blank?
+           end
+           col = ColumnMap[sort_col_idx]
+
+           d = documents[col].send(dir)
+           query.order(d)
+         end
+       end
       
       # Paging
       if params["iDisplayStart"] 

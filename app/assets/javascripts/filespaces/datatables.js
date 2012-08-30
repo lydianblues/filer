@@ -11,7 +11,7 @@ $(function() {
         $(this).dataTable({
             "bJQueryUI": true,
             "bProcessing": true,
-//          "bServerSide": true,
+            "bServerSide": true,
             "sAjaxSource": json_url,
             "bAutoWidth": false,
             "bDeferRender": true,
