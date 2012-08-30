@@ -40,7 +40,7 @@ class Document < ActiveRecord::Base
             col = ColumnMap[n]
             t = documents[col].matches(pattern)
             if search
-                search.or(t)
+                search = search.or(t)
             else
               search = t
             end
@@ -59,7 +59,7 @@ class Document < ActiveRecord::Base
           pattern = '%' + sanitize_sql(params["sSearch_#{n}"]) + '%'
           t = documents[col].matches(pattern)
           if search
-            search.or(t)
+            search = search.or(t)
           else
             search = t
           end
@@ -72,17 +72,16 @@ class Document < ActiveRecord::Base
       
       if params["iSortCol_0"]
          iSortCol_0 = params["iSortCol_0"]
-         iSortingCols = params["iSortingCols"].to_i
+         dir = params["sSortDir_0"]
+         dir = "asc" if dir.blank?
+         iSortingCols = params["iSortingCols"].to_i   
          for n in 0..(iSortingCols - 1)
            sort_col_idx = params["iSortCol_#{n}"].to_i
            if params["bSortable_#{sort_col_idx}"] == "true"
-             dir = params["sSortDir_#{sort_col_idx}"]
-             dir = "asc" if dir.blank?
+             col = ColumnMap[sort_col_idx]
+             d = documents[col].send(dir)
+             query.order(d)
            end
-           col = ColumnMap[sort_col_idx]
-
-           d = documents[col].send(dir)
-           query.order(d)
          end
        end
       
