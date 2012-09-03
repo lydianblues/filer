@@ -7,7 +7,7 @@ class Filespace < ActiveRecord::Base
   belongs_to :incoming_folder, class_name: Folder
   belongs_to :trash_folder, class_name: Folder
   belongs_to :archived_folder, class_name: Folder
-  
+   
   validates_presence_of :name
 
   # Set up a new filespace.

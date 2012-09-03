@@ -79,11 +79,22 @@ $(function () {
             $(".trail", filespace_panel).html(path_string);
             file_upload_form.attr("action", upload_action);
             $("table > tbody.files", file_upload_form).empty();
-                
+              
+            // Example to show how to change an option in 
+            // jQuery widgets.
+            //  
+            // $( "#something").multi("option", "clear" , 
+            //    function (event) {
+            //        alert("I cleared the multiselect!"); 
+            //    }
+            // );
+            
+           
+            
             // This function is derived from the uploader initialization
             // function in _uploader.html.erb.  This is the only direct
             // tie-in with the uploader.
-            $.getJSON(upload_action, function (files) {
+            /* $.getJSON(upload_action, function (files) {
                 var fu = file_upload_form.data('fileupload'), 
                     template;
                 fu._adjustMaxNumberOfFiles(-files.length);
@@ -94,7 +105,7 @@ $(function () {
                     template[0].offsetWidth;
                 template.addClass('in');
                 $('#loading').remove();
-            });
+            }); */
 
             // Install a new URL into DataTables.
             oTable.fnNewAjax(file_action); 
@@ -191,7 +202,57 @@ $(function () {
             $.ajax(url, settings);
         })
         .bind("copy_node.jstree", function (e, data) {
-            alert("Copy node");
+            // TODO factor out common code between this and "move_node".
+            var new_instance = data.inst,
+                 old_instance = data.rslt.old_instance,
+                 old_filespace = old_instance.get_container().data("filespace"),
+                 new_filespace = new_instance.get_container().data("filespace"),
+                 old_parent = data.rslt.old_parent,
+                 new_parent = data.rslt.parent,
+                 is_multi = data.rslt.is_multi,
+                 child = data.rslt.obj,
+                 child_id = child.attr("id").replace("copy_node-", ""),
+                 url = "/folders/" + child_id + ".json", // Rails URL
+                 old_parent_id,
+                 new_parent_id,
+                 settings;
+                 
+            if (old_parent === -1) {
+                 old_parent_id = "-1";
+             } else {
+                 old_parent_id = old_parent.attr("id").replace("node-", "");
+             }
+             if (new_parent === -1) {
+                 new_parent_id = "-1";
+             } else {
+                 new_parent_id = new_parent.attr("id").replace("node-", "");
+             }
+             settings = {
+                 dataType: 'json',
+                 success: function(data, textStatus, jqXHR) {
+                     debugger;
+                     // Here we have to fix the node id with the
+                     // node id assigned by the server.
+                     
+                     // alert("Copy success");
+                 },
+                 error: function(jqXHR, textStatus, errorThown) {
+                     alert("Copy failure");
+                 },
+                 type: 'POST',
+                 accepts: 'json',
+                 data: {
+                     _method: 'PUT',
+                     operation: 'copy_node',
+                     mover: {
+                         old_filespace: old_filespace,
+                         new_filespace: new_filespace,
+                         old_parent: old_parent_id,
+                         new_parent: new_parent_id,
+                     }
+                 }
+             };
+             $.ajax(url, settings);
         });
     });
 });

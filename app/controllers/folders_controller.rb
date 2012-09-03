@@ -120,6 +120,7 @@ class FoldersController < ApplicationController
       else
         render json: nil, status: :unprocessable_entity
       end
+      
     when "move_node"
       # Support move between filespaces.  Need to make sure that the
       # user has permissions to do this.
@@ -135,15 +136,30 @@ class FoldersController < ApplicationController
       # returns an error.  This is not fatal, however, since the server
       # has the correct tree structure all the client has to do is refresh
       # the page to see the correct tree.
+      
+      # XXX BUG TODO also if moving the last child of the old parent,
+      # turn off the leaf flag of the old parent.
       begin
         ActiveRecord::Base.transaction do
           parent_folder.update_attributes!(leaf: false)
           @folder.update_attributes!(filespace_id: filespace_id,
             parent_id: parent_id)
-          raise "z"
         end
       rescue Exception => e
         logger.warn "FoldersController#update: Move node failed: #{e.message}"
+        status = :unprocessable_entity
+      else
+        status = :ok
+      end
+       render json: nil, status: status
+       
+    when "copy_node"
+      filespace_id =  params[:mover][:new_filespace].to_i
+      parent_id = params[:mover][:new_parent].to_i
+      begin
+         @folder.duplicate(filespace_id, parent_id, recursive: true)
+      rescue Exception => e
+        logger.warn "FoldersController#update: Copy node failed: #{e.message}"
         status = :unprocessable_entity
       else
         status = :ok

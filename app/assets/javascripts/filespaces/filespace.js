@@ -20,8 +20,10 @@ $(function() {
     }, 2000); // fog requires longer timeout
     
     setTimeout(function() {
+        debugger;
         $(".fileupload-control").each(function(index, element) {
             $(this).fileupload({
+                // dropZone: $(".drop-zone"),
                 done: function(e, data) {
                     // Don't do anything for downloads.
                 }
@@ -48,11 +50,35 @@ $(function() {
           root_folder = data.rootFolder,
           oTable = $("#file-table-" + filespace).dataTable();
 
-        if (ui.index == 0) {
+        switch (ui.index) {
+        case 0:
             // The URL to use is already set in the DataTables configuration
-            // data.  We are not changing it here.
+            // data.  We are not changing it here.  (We have to reload the
+            // page in case we just uploaded new files.)
             oTable.fnReloadAjax();
+            
+            // Deactivate the droppable region.
+            console.log("filespace action 0: deactivate droppable region");
+            
+            break;
+        case 1:
+        
+            // We are switching to the file uploader sub-panel.
+            // Activate the droppable region.
+            console.log("filespace action 1: activate droppable region");
+            
+            break;
+        case 2:
+        
+            // Deactivate the droppable region.
+            console.log("filespace action 2: deactivate droppable region");
+            
+            break;
+            
+        default:
+            alert("unhandled filespace action tab");
         }
+        
     });
 });
 
