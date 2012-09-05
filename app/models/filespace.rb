@@ -9,6 +9,10 @@ class Filespace < ActiveRecord::Base
   belongs_to :archived_folder, class_name: Folder
    
   validates_presence_of :name
+  
+  def total_folders
+    Filespace.where(filespace_id: self.id).all.size
+  end
 
   # Set up a new filespace.
   def self.generate!(attrs)
@@ -18,7 +22,8 @@ class Filespace < ActiveRecord::Base
       filespace.root_folder = root
       parent_id = root.id
       ["incoming", "current", "archived", "trash"].each do |ntype|
-        f = filespace.folders.build(name: ntype.titleize, parent_id: parent_id)
+        f = filespace.folders.build(name: ntype.titleize)
+        f.parent = root
         f.ntype = ntype
         filespace.send("#{ntype}_folder=", f)
       end
