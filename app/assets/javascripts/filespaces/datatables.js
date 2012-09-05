@@ -83,7 +83,7 @@ $(function() {
                         "sExtends":    "text",
                         "sButtonText": "Process",
                         "fnClick": function(nButton, oConfig) {
-                            var oTable = this.s.dt.oInstance
+                            var oTable = this.s.dt.oInstance;
                             
                             oTable.fnProcessingIndicator();
                             
@@ -93,18 +93,41 @@ $(function() {
                         "sExtends":    "text",
                         "sButtonText": "Copy",
                         "fnClick": function(nButton, oConfig) {
-                            var selected  = this.fnGetSelected();
-                            // this.fnSelectNone();
-                            alert("Copying " + selected.length + " rows");
+                            /* var selected  = this.fnGetSelected(),
+                                oTable = this.s.dt.oInstance, ids = [];
+                            
+                            // 'selected' is an array of DOM <tr> elements.
+                            $(selected).each(function() {
+                                var id = $("td:nth-child(1)", this);
+                                ids.push(id.text());
+                            });
+                            
+                            
+                            oTable.data("copiedRows", ids); */
                         }
                     },
                     {
                         "sExtends":    "text",
                         "sButtonText": "Paste",
                         "fnClick": function(nButton, oConfig) {
-                            var selected  = this.fnGetSelected();
-                            // this.fnSelectNone();
-                            alert("Pasting " + selected.length + " rows");
+                            var oTable = this.s.dt.oInstance, ids = [],
+                                selected  = this.fnGetSelected();
+                            
+                            // 'selected' is an array of DOM <tr> elements.
+                            $(selected).each(function() {
+                                var id = $("td:nth-child(1)", this);
+                                ids.push(id.text());
+                            });
+                            
+                            // 'ids' is an array of strings representing
+                            // integers:  ["3", "240", "88"] for example.
+                            // Save this array in the copiedRows data attribute
+                            // of the oTable.
+                            
+                            console.log("Pasting ids: " + ids);
+                            
+                            this.fnSelectNone();
+                        
                         }
                     }
                 ]

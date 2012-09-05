@@ -18,13 +18,14 @@ class Filespace < ActiveRecord::Base
   def self.generate!(attrs)
     ActiveRecord::Base.transaction do
       filespace = Filespace.create!(attrs)
-      root = filespace.folders.create(name: "Root")
+      root = filespace.folders.build(name: "Root")
+      root.leaf = false
+      filespace.folders << root
       filespace.root_folder = root
-      parent_id = root.id
       ["incoming", "current", "archived", "trash"].each do |ntype|
         f = filespace.folders.build(name: ntype.titleize)
-        f.parent = root
         f.ntype = ntype
+        root.children << f
         filespace.send("#{ntype}_folder=", f)
       end
       filespace.save!

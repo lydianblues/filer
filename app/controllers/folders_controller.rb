@@ -89,16 +89,22 @@ class FoldersController < ApplicationController
   def create
     parent_id = params[:folder][:parent_id]
     parent = Folder.find(parent_id)
-    filespace = Filespace.find(parent.filespace_id)
-    folder = Folder.new(name: "New Node", parent_id: parent_id)
-    filespace.folders << folder
+    filespace = parent.filespace
+    folder = nil
     begin
       ActiveRecord::Base.transaction do
-        filespace.save! # also saves the new folder
+        folder = Folder.new(name: "New Node")
+        logger.info "Filespace id is #{filespace.id}"
+        folder.filespace_id = filespace.id
+        parent.children << folder
+        
+        # filespace.save! # also saves the new folder
         parent.leaf = false
         parent.save!
       end
     rescue Exception => e
+      logger.info e.message
+      logger.info e.backtrace.join("\n")
       render json: nil, status: :unprocessable_entity
     else
       logger.info folder.to_json
