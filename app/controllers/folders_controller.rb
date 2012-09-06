@@ -171,11 +171,40 @@ class FoldersController < ApplicationController
         status = :ok
       end
        render json: nil, status: status
+    
+    when "paste_files"
+      target_fs_id = params[:target_fs]
+      target_folder_id = params[:target_folder]
+      debugger;
+      begin
+        target_filespace = Filespace.find(target_fs_id)
+        target_folder = Folder.find(target_folder_id)
+        if target_folder.filespace != target_filespace
+          raise "Invalid filespace or folder"
+        end
+        doc_ids = params[:documents] || []
+        doc_ids.each do |doc_id|
+          link = Link.where(folder_id: target_folder_id,
+            document_id: doc_id).first
+          unless link
+            doc = Document.find(doc_id)
+            target_folder.documents << doc
+          end
+        end
+      rescue Exception => e
+        logger.warn "FoldersController#update: " +
+          "Paste files failed: #{e.message}"
+        status = :unprocessable_entity
+      else
+        status = :ok
+      end
+      render json: nil, status: status
     end
   end
   
   def destroy
      @folder = Folder.find(params[:id])
+     # Need to destroy links too..
      @folder.destroy
      flash[:notice] = "Successfully destroyed folder."
      redirect_to folders_url

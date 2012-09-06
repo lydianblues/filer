@@ -93,17 +93,14 @@ $(function() {
                         "sExtends":    "text",
                         "sButtonText": "Copy",
                         "fnClick": function(nButton, oConfig) {
-                            /* var selected  = this.fnGetSelected(),
-                                oTable = this.s.dt.oInstance, ids = [];
+                            var selected  = this.fnGetSelected(), ids = [];
                             
                             // 'selected' is an array of DOM <tr> elements.
                             $(selected).each(function() {
                                 var id = $("td:nth-child(1)", this);
                                 ids.push(id.text());
                             });
-                            
-                            
-                            oTable.data("copiedRows", ids); */
+                            $("#filespace-master").data("copiedRows", ids); 
                         }
                     },
                     {
@@ -111,29 +108,40 @@ $(function() {
                         "sButtonText": "Paste",
                         "fnClick": function(nButton, oConfig) {
                             var oTable = this.s.dt.oInstance, ids = [],
-                                selected  = this.fnGetSelected(),
-                                target_fs, target_folder;
+                                selected  = this.fnGetSelected(), settings,
+                                target_fs = oTable.data("filespace"),
+                                target_folder = oTable.data("folder"),
+                                // Rails URL
+                                url = "/folders/" + target_folder + ".json";
                             
                             // 'selected' is an array of DOM <tr> elements.
-                            $(selected).each(function() {
-                                var id = $("td:nth-child(1)", this);
-                                ids.push(id.text());
-                            });
-                            
-                            // 'ids' is an array of strings representing
-                            // integers:  ["3", "240", "88"] for example.
-                            // fs_id is the target filespace
-                            // ... is the target folder
-                            
-                            target_fs = oTable.data("filespace");
-                            target_folder = oTable.data("current");
-                        
-                            
-                            console.log("Pasting ids: " + ids + " to " +
-                                target_fs + );
-                            
+                            // $(selected).each(function() {
+                            //    var id = $("td:nth-child(1)", this);
+                            //    ids.push(id.text());
+                            // });
+                            ids = $("#filespace-master").data("copiedRows");
+                            debugger;
+                            console.log("pasting " + ids.length + " files")
+                            settings = {
+                                dataType: 'json',
+                                success: function(data, textStatus, jqXHR) {
+                                    // TODO force a reload of the table...
+                                },
+                                error: function(jqXHR, textStatus, errorThown) {
+                                    alert("Paste failure");
+                                },
+                                type: 'POST',
+                                accepts: 'json',
+                                data: {
+                                    _method: 'PUT',
+                                    operation: 'paste_files',
+                                    target_fs: target_fs,
+                                    target_folder: target_folder,
+                                    documents: ids
+                                }
+                            };
+                            $.ajax(url, settings);
                             this.fnSelectNone();
-                        
                         }
                     }
                 ]

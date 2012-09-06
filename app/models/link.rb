@@ -1,4 +1,4 @@
 class Link < ActiveRecord::Base
-  belongs_to :documents
-  belongs_to :folders
+  belongs_to :document
+  belongs_to :folder
 end
