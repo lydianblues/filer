@@ -1,10 +1,11 @@
 class DemosController < ApplicationController
    
   def show
-   ["User", "Company", "Project", "IncomingRequest", 
-     "OutgoingQuote"].each do |name|
+    @filespaces = []
+    ["User", "Company", "Project", "IncomingRequest", 
+      "OutgoingQuote"].each do |name|
       fs = find_or_create_filespace({name: name})
-      instance_variable_set("@#{name.downcase}_filespace", fs)
+      @filespaces << fs
     end
   end
 

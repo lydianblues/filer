@@ -13,7 +13,9 @@ class Filespace < ActiveRecord::Base
   class Error < StandardError; end
   
   #
-  # Create a snapshot of the current filespace.  
+  # Create a snapshot of the current filespace.  The current version
+  # number is copied into the snapshot filespace, and the version
+  # number of the current filespace is then incremented.
   #
   def snapshot!
     opts = {

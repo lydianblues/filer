@@ -72,6 +72,7 @@ $(function () {
                 path = inst.get_path(li_node),
                 path_string = "<span id=\"leader\">Active Folder:</span>";
 
+            oTable.data("folder", folder_id);
             $.each(path, function(index, value) {
                 path_string += "/" + value;
             });

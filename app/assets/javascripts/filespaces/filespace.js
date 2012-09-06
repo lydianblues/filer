@@ -32,7 +32,11 @@ $(function() {
     }, 0);
     
     // Make a click on the file chooser button redirect the click
-    // to the associated file input field of the upload form.
+    // to the associated file input field of the upload form.  This
+    // is because file input fields are notoriously difficult to 
+    // style, so the work-around is to create a button, hide the
+    // file input field, and pass the click on the button on to the
+    // file input field.
     $(".file-chooser").on("click",  function() {
         $(this).next().find("input").click();
     });

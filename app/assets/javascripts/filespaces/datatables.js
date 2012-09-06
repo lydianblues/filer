@@ -111,7 +111,8 @@ $(function() {
                         "sButtonText": "Paste",
                         "fnClick": function(nButton, oConfig) {
                             var oTable = this.s.dt.oInstance, ids = [],
-                                selected  = this.fnGetSelected();
+                                selected  = this.fnGetSelected(),
+                                target_fs, target_folder;
                             
                             // 'selected' is an array of DOM <tr> elements.
                             $(selected).each(function() {
@@ -121,10 +122,15 @@ $(function() {
                             
                             // 'ids' is an array of strings representing
                             // integers:  ["3", "240", "88"] for example.
-                            // Save this array in the copiedRows data attribute
-                            // of the oTable.
+                            // fs_id is the target filespace
+                            // ... is the target folder
                             
-                            console.log("Pasting ids: " + ids);
+                            target_fs = oTable.data("filespace");
+                            target_folder = oTable.data("current");
+                        
+                            
+                            console.log("Pasting ids: " + ids + " to " +
+                                target_fs + );
                             
                             this.fnSelectNone();
                         
