@@ -43,8 +43,21 @@ class Folder < ActiveRecord::Base
       target.save!
     end
   rescue Exception => e
-      trace = e.backtrace.join("\n")
-      raise FolderError, "Folder#duplicate!: #{e.message}\n#{trace}"
+    trace = e.backtrace.join("\n")
+    raise FolderError, "Folder#duplicate!: #{e.message}\n#{trace}"
+  end
+  
+  def self.paste!(target, doc_ids)
+    doc_ids.each do |doc_id|
+      link = Link.where(folder_id: target.id, document_id: doc_id).first
+      unless link
+        doc = Document.find(doc_id)
+        target.documents << doc
+      end
+    end
+  rescue Exception => e
+    trace = e.backtrace.join("\n")
+    raise FolderError, "Folder#paste!: #{e.message}\n#{trace}"
   end
 
   private

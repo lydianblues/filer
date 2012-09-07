@@ -119,76 +119,36 @@ class FoldersController < ApplicationController
   # PUT /folders/:id.json
   def update
     @folder = Folder.find(params[:id])
-    case params[:operation]
-    when "rename_node"
-      if @folder.update_attributes(params[:folder])
-        render json: nil,  status: :ok
-      else
-        render json: nil, status: :unprocessable_entity
-      end
-      
-    when "move_node"
-       target_folder_id = params[:mover][:new_parent].to_i
-      
-      # On the client side, the client should save the tree before it
-      # changes the tree in memory, then restore the tree if the server
-      # returns an error.  This is not fatal, however, since the server
-      # has the correct tree structure all the client has to do is refresh
-      # the page to see the correct tree.
-      
-      begin
+    operation = params[:operation]
+    resp = {}
+    status = :ok
+    begin
+      case operation
+      when "rename_node"
+        @folder.update_attributes!(name: params[:folder][:name])
+      when "move_node"
+        target_folder_id = params[:mover][:new_parent].to_i
         target_folder = Folder.find(target_folder_id)
         @folder.move!(target_folder)
-      rescue Exception => e
-        logger.warn "FoldersController#update: Move node failed: #{e.message}"
-        status = :unprocessable_entity
-      else
-        status = :ok
-      end
-       render json: nil, status: status
-       
-    when "copy_node"
-      filespace_id =  params[:mover][:new_filespace].to_i
-      target_folder_id = params[:mover][:new_parent].to_i
-      begin
-         target_folder = Folder.find(target_folder_id)
-         @folder.copy!(target_folder, recursive: true)
-      rescue Exception => e
-        logger.warn "FoldersController#update: Copy node failed: #{e.message}"
-        status = :unprocessable_entity
-      else
-        status = :ok
-      end
-       render json: nil, status: status
-    
-    when "paste_files"
-      target_fs_id = params[:target_fs]
-      target_folder_id = params[:target_folder]
-      begin
+      when "copy_node"
+        target_folder_id = params[:mover][:new_parent].to_i 
+        target_folder = Folder.find(target_folder_id)
+        @folder.copy!(target_folder, recursive: true)
+      when "paste_files"
+        target_fs_id = params[:target_fs].to_i
+        target_folder_id = params[:target_folder].to_i
         target_filespace = Filespace.find(target_fs_id)
         target_folder = Folder.find(target_folder_id)
-        if target_folder.filespace != target_filespace
-          raise "Invalid filespace or folder"
-        end
         doc_ids = params[:documents] || []
-        doc_ids.each do |doc_id|
-          link = Link.where(folder_id: target_folder_id,
-            document_id: doc_id).first
-          unless link
-            doc = Document.find(doc_id)
-            target_folder.documents << doc
-          end
-        end
-      rescue Exception => e
-        logger.warn "FoldersController#update: " +
-          "Paste files failed: #{e.message}"
-        status = :unprocessable_entity
-      else
-        status = :ok
+        Folder.paste!(target_folder, doc_ids)
+        resp = {filespace: target_fs_id, folder: target_folder_id}
       end
-      results = {filespace: target_fs_id, folder: target_folder_id}.to_json
-      render json: results, status: status
+    rescue Exception => e
+      logger.warn "FoldersController#update: #{operation} " +
+        "operation failed: #{e.message}"
+      status = :unprocessable_entity
     end
+    render json: resp.to_json, status: status
   end
   
   def destroy
