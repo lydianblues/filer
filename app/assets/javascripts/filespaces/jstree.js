@@ -54,13 +54,21 @@ $(function () {
               }; // end of list of vars
             $.ajax(url, settings);
         })
-        .bind("dblclick.jstree click.jstree", function(e, data) {
+        .bind("dblclick.jstree click.jstree",
+            function select_folder(e, data) {
             console.log("jstree handling (dbl-)click event");
             // 'this' is the root div of a JsTree.
-            // debugger;
+            
             var inst_id = $(this).data().jstree_instance_id,
                 inst = $.jstree._reference(inst_id),
-                li_node = $(e.target.parentNode),
+                li_node = $(e.target.parentNode), folder_id, upload_action,
+                filespace, file_upload_form, filespace_panel, oTable,
+                file_action, path, path_string;
+                
+            if (li_node.attr("id") === undefined) {
+                console.log("JsTree node does not have id");
+                return;
+            } else {
                 folder_id = li_node.attr("id").replace("node-",""),
                 upload_action = "/folders/" + folder_id + "/uploads", // Rails URL
                 filespace = inst.get_container().data().filespace,
@@ -72,47 +80,21 @@ $(function () {
                 path = inst.get_path(li_node),
                 path_string = "<span id=\"leader\">Active Folder:</span>";
 
-            oTable.data("folder", folder_id);
-            $.each(path, function(index, value) {
-                path_string += "/" + value;
-            });
+                oTable.data("folder", folder_id);
+                $.each(path, function(index, value) {
+                    path_string += "/" + value;
+                });
 
-            $(".trail", filespace_panel).html(path_string);
-            file_upload_form.attr("action", upload_action);
-            $("table > tbody.files", file_upload_form).empty();
-              
-            // Example to show how to change an option in 
-            // jQuery widgets.
-            //  
-            // $( "#something").multi("option", "clear" , 
-            //    function (event) {
-            //        alert("I cleared the multiselect!"); 
-            //    }
-            // );
-            
-           
-            
-            // This function is derived from the uploader initialization
-            // function in _uploader.html.erb.  This is the only direct
-            // tie-in with the uploader.
-            /* $.getJSON(upload_action, function (files) {
-                var fu = file_upload_form.data('fileupload'), 
-                    template;
-                fu._adjustMaxNumberOfFiles(-files.length);
-                template = fu._renderDownload(files)
-                    .appendTo('.files', file_upload_form);
-                // Force reflow:
-                fu._reflow = fu._transition && template.length &&
-                    template[0].offsetWidth;
-                template.addClass('in');
-                $('#loading').remove();
-            }); */
+                $(".trail", filespace_panel).html(path_string);
+                file_upload_form.attr("action", upload_action);
+                $("table > tbody.files", file_upload_form).empty();
 
-            // Install a new URL into DataTables.
-            oTable.fnNewAjax(file_action); 
-            oTable.fnReloadAjax();
-            console.log("upload_action: " + upload_action);
-            console.log("file_action: " + file_action);
+                // Install a new URL into DataTables.
+                oTable.fnNewAjax(file_action); 
+                oTable.fnReloadAjax();
+                console.log("upload_action: " + upload_action);
+                console.log("file_action: " + file_action);
+            }
         })
         .bind("rename_node.jstree", function (e, data) {
             var obj_id = data.rslt.obj.attr("id").replace("node-", ""),
