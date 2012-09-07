@@ -144,7 +144,7 @@ class FoldersController < ApplicationController
       # the page to see the correct tree.
       
       # XXX BUG TODO also if moving the last child of the old parent,
-      # turn off the leaf flag of the old parent.
+      # turn off the leaf flag of the old parent. XXX start here, ....
       begin
         ActiveRecord::Base.transaction do
           parent_folder.update_attributes!(leaf: false)
@@ -175,7 +175,6 @@ class FoldersController < ApplicationController
     when "paste_files"
       target_fs_id = params[:target_fs]
       target_folder_id = params[:target_folder]
-      debugger;
       begin
         target_filespace = Filespace.find(target_fs_id)
         target_folder = Folder.find(target_folder_id)
@@ -198,7 +197,8 @@ class FoldersController < ApplicationController
       else
         status = :ok
       end
-      render json: nil, status: status
+      results = {filespace: target_fs_id, folder: target_folder_id}.to_json
+      render json: results, status: status
     end
   end
   

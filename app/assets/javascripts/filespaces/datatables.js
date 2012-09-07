@@ -41,7 +41,9 @@ $(function() {
                             if (selected.length > 0) {
                                 var ft = $(selected[0]).closest(".file-table"),
                                     oTable = ft.DataTable(),
-                                    folder_id = ft.data("current");
+                                    folder_id = ft.data("folder");
+                                console.log("deleting for folder id = " +
+                                    folder_id);
                                 $(selected).each(function(index, element) {
                                      var url, id, settings;
                                      
@@ -114,18 +116,17 @@ $(function() {
                                 // Rails URL
                                 url = "/folders/" + target_folder + ".json";
                             
-                            // 'selected' is an array of DOM <tr> elements.
-                            // $(selected).each(function() {
-                            //    var id = $("td:nth-child(1)", this);
-                            //    ids.push(id.text());
-                            // });
+                            // Sort of a clipboard.  It holds the ids of
+                            // documents that were copied.
                             ids = $("#filespace-master").data("copiedRows");
-                            debugger;
-                            console.log("pasting " + ids.length + " files")
+
                             settings = {
                                 dataType: 'json',
                                 success: function(data, textStatus, jqXHR) {
-                                    // TODO force a reload of the table...
+                                    var filespace = data.filespace,
+                                        ft = $("#file-table-" + filespace),
+                                        oTable = ft.DataTable();
+                                    oTable.fnReloadAjax();
                                 },
                                 error: function(jqXHR, textStatus, errorThown) {
                                     alert("Paste failure");

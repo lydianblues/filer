@@ -95,7 +95,7 @@ class Document < ActiveRecord::Base
       end
 
       total_records = Document.entries_for_folder(params["folder_id"]).size
-      results = Document.find_by_sql(query.project(Arel.sql('*')))
+      results = Document.find_by_sql(query.project(Arel.sql('documents.*')))
       format_results(results, total_records, total_matches, params["sEcho"])
     end
 
