@@ -128,29 +128,17 @@ class FoldersController < ApplicationController
       end
       
     when "move_node"
-      # Support move between filespaces.  Need to make sure that the
-      # user has permissions to do this.
-      params[:mover][:old_filespace]
-      params[:mover][:old_parent]
-      filespace_id =  params[:mover][:new_filespace]
-      parent_id = params[:mover][:new_parent]
-      parent_folder = Folder.find(parent_id)
+       target_folder_id = params[:mover][:new_parent].to_i
       
-      # Gaping security hole.  Anyone can move any folder to anywhere.
       # On the client side, the client should save the tree before it
       # changes the tree in memory, then restore the tree if the server
       # returns an error.  This is not fatal, however, since the server
       # has the correct tree structure all the client has to do is refresh
       # the page to see the correct tree.
       
-      # XXX BUG TODO also if moving the last child of the old parent,
-      # turn off the leaf flag of the old parent. XXX start here, ....
       begin
-        ActiveRecord::Base.transaction do
-          parent_folder.update_attributes!(leaf: false)
-          @folder.update_attributes!(filespace_id: filespace_id,
-            parent_id: parent_id)
-        end
+        target_folder = Folder.find(target_folder_id)
+        @folder.move!(target_folder)
       rescue Exception => e
         logger.warn "FoldersController#update: Move node failed: #{e.message}"
         status = :unprocessable_entity
@@ -161,9 +149,10 @@ class FoldersController < ApplicationController
        
     when "copy_node"
       filespace_id =  params[:mover][:new_filespace].to_i
-      parent_id = params[:mover][:new_parent].to_i
+      target_folder_id = params[:mover][:new_parent].to_i
       begin
-         @folder.duplicate(filespace_id, parent_id, recursive: true)
+         target_folder = Folder.find(target_folder_id)
+         @folder.copy!(target_folder, recursive: true)
       rescue Exception => e
         logger.warn "FoldersController#update: Copy node failed: #{e.message}"
         status = :unprocessable_entity
