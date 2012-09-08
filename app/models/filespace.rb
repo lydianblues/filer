@@ -1,5 +1,4 @@
 class Filespace < ActiveRecord::Base
-  # attr_accessible :title, :body
   attr_accessible :name
   has_many :folders
   belongs_to :root_folder, class_name: Folder
@@ -7,6 +6,9 @@ class Filespace < ActiveRecord::Base
   belongs_to :incoming_folder, class_name: Folder
   belongs_to :trash_folder, class_name: Folder
   belongs_to :archived_folder, class_name: Folder
+  
+  has_many :clusterings
+  has_many :clusters, through: :clusterings
    
   validates_presence_of :name
   

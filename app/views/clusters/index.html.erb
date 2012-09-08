@@ -1,0 +1,22 @@
+<div id="cluster-list">
+    <% if @clusters.empty? %>
+        No clusters available.
+    <% else %>
+        <% @clusters.each do |c| %>
+            <%= link_to(c.name, c) %>
+          
+          
+            <% if c.filespaces.any? %>
+                <span>&#40;</span>
+                <% c.filespaces.each do |f| %>
+                    <span>&nbsp;</span>
+                    <%= link_to(f.name, f) %>
+                    <span>&nbsp;</span>
+                <% end %>
+                <span>&#41;</span>
+            <% end %>
+          
+            <br>    
+        <% end %>
+    <% end %>
+</div>

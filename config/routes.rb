@@ -1,8 +1,6 @@
 Research::Application.routes.draw do
 
-  resources :xxxxes
-
-  resource :demo  
+  resources :clusters
   resources :filespaces
   resources :users
   resources :folders do
@@ -12,7 +10,7 @@ Research::Application.routes.draw do
   
   resources :tables
 
-  root :to => 'filespaces#index'
+  root :to => 'clusters#index'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -6,9 +6,6 @@ class FilespacesController < ApplicationController
 
   def show
     @filespace = Filespace.find(params[:id])
-    
-    # Set the root folder for this filespace.
-    @root_folder = @filespace.root_folder
   end
 
   def new

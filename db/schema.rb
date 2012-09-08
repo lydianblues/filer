@@ -11,7 +11,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120803183656) do
+ActiveRecord::Schema.define(:version => 20120908020857) do
+
+  create_table "clusterings", :force => true do |t|
+    t.integer "cluster_id"
+    t.integer "filespace_id"
+  end
+
+  create_table "clusters", :force => true do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "documents", :force => true do |t|
     t.string   "content"
