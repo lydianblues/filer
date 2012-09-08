@@ -23,7 +23,6 @@ $(function() {
         debugger;
         $(".fileupload-control").each(function(index, element) {
             $(this).fileupload({
-                // dropZone: $(".drop-zone"),
                 done: function(e, data) {
                     // Don't do anything for downloads.
                 }

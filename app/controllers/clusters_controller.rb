@@ -5,13 +5,16 @@ class ClustersController < ApplicationController
     bill = Cluster.create!(name: "Bill")
     frank = Cluster.create!(name: "Frank")
     
-    
     f = Filespace.generate!(name: "Filespace for Bill")
     g = Filespace.generate!(name: "Another Filespace for Bill")
     bill.filespaces << [f, g]
     f.save!
     g.save!
     @clusters = [bill, frank]
+  end
+  
+  def new
+    # Render form to create new cluster...
   end
   
   def show

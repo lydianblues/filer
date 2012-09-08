@@ -8,8 +8,6 @@ Research::Application.routes.draw do
     resources :uploads
   end
   
-  resources :tables
-
   root :to => 'clusters#index'
 
   # The priority is based upon order of creation:
