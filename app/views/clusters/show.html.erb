@@ -1,8 +1,8 @@
 <% title "Filespaces Demo" %>
 
-<%= stylesheet_link_tag "jquery.fileupload-ui" %>
+<%= stylesheet_link_tag "fileupload" %>
 <%= stylesheet_link_tag 'redmond/jquery-ui-1.8.23.custom' %>
-<%= stylesheet_link_tag 'jquery.dataTables_themeroller' %>
+<%= stylesheet_link_tag 'datatables' %>
 <%= stylesheet_link_tag 'TableTools' %>
 <%= stylesheet_link_tag 'TableTools_JUI' %> 
 
@@ -32,15 +32,11 @@
 <%= javascript_include_tag 'datatables' %>
 <%= javascript_include_tag 'tabletools' %>
 
-<%= javascript_include_tag 'filespaces/helpers' %>
-<%= javascript_include_tag 'filespaces/jstree' %>
-<%= javascript_include_tag 'filespaces/datatables' %>
-<%= javascript_include_tag 'filespaces/filespace' %>
+<%= javascript_include_tag("tmpl.min") %>
+<%= javascript_include_tag("load-image.min") %>
+<%= javascript_include_tag("canvas-to-blob.min") %>
 
-<%= javascript_include_tag("tmpl.min.js") %>
-<%= javascript_include_tag("load-image.min.js") %>
-<%= javascript_include_tag("canvas-to-blob.min.js") %>
-
+<%= javascript_include_tag 'filespaces' %>
 <%= javascript_include_tag 'fileupload' %>
 
 <script>

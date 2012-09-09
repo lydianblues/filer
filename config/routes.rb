@@ -1,4 +1,4 @@
-Research::Application.routes.draw do
+Filer::Application.routes.draw do
 
   resources :clusters
   resources :filespaces

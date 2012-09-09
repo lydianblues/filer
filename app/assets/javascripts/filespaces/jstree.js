@@ -4,7 +4,7 @@ $(function () {
             // List of active plugins
             "plugins" : ["themes", "json", "ui", "dnd", "search",
                 "hotkeys", "contextmenu", "helpers"],
-
+            "themes": {"url": "vendor/jstree.css"},
             "json" : { 
             
                 "ajax" : {
@@ -237,5 +237,6 @@ $(function () {
              };
              $.ajax(url, settings);
         });
+        $(this).jstree("set_theme","default","/assets/jstree.css");
     });
 });

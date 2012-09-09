@@ -20,7 +20,6 @@ $(function() {
     }, 2000); // fog requires longer timeout
     
     setTimeout(function() {
-        debugger;
         $(".fileupload-control").each(function(index, element) {
             $(this).fileupload({
                 done: function(e, data) {
